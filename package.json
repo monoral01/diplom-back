@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "backend for diploma",
   "main": "index.js",
+  "scripts": {
+    "start": "node backend/index.js"
+  },
   "author": "monoral01",
   "license": "MIT",
   "dependencies": {
