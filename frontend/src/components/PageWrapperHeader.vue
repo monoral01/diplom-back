@@ -60,25 +60,17 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 
 export default defineComponent({
   name: "PageWrapperHeader",
   setup() {
-    const store = useStore();
     const router = useRouter();
     const logout = async () => {
       console.log("logout");
-      //   await store.dispatch("user/unsubscribeAllStreams", {
-      //     param: store.state.user.info.account.id,
-      //     isLogout: true,
-      //   });
-      //   store.dispatch("auth/authLogout");
       router.push("/");
     };
 
     return {
-      store,
       logout,
     };
   },

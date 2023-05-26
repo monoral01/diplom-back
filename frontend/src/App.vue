@@ -6,19 +6,21 @@
   </a-config-provider>
 </template>
 <script lang="ts">
-import { watchEffect, defineComponent, ref } from "vue";
+import { defineComponent, ref, onBeforeMount } from "vue";
 import ruRU from "ant-design-vue/es/locale/ru_RU";
+import { logout } from "./service/authorizationService";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const token = ref("");
-    watchEffect(() => {
-      fetch("/api")
-        .then((response) => response.json())
-        .then((response) => {
-          token.value = response.token;
-        });
-      console.log(token.value);
+    const token = ref<string | null>(null);
+    const router = useRouter();
+    onBeforeMount(async () => {
+      token.value = localStorage.getItem("token");
+      if (!token.value) {
+        await logout();
+        router.push("/");
+      }
     });
     return { token, locale: ruRU };
   },

@@ -4,7 +4,7 @@
       <div class="buttons-wrapper__right card__buttons">
         <a-button type="primary" ghost>Сохранить</a-button>
         <a-button type="primary">закрыть</a-button>
-        <a-button type="primary" :disabled="!entityCardState.status"
+        <a-button type="primary" :disabled="!companyCardState.status"
           >удалить</a-button
         >
       </div>
@@ -15,7 +15,7 @@
       <div class="card__body">
         <a-form
           ref="formRef"
-          :model="entityCardState"
+          :model="companyCardState"
           layout="vertical"
           :rules="{}"
           :validateOnRuleChange="true"
@@ -46,7 +46,7 @@
                           label="Название компании"
                         >
                           <a-input
-                            v-model:value="entityCardState.companyName"
+                            v-model:value="companyCardState.companyName"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -54,7 +54,7 @@
                       <a-col span="6">
                         <a-form-item name="status" label="Статус карточки">
                           <a-input
-                            v-model:value="entityCardState.status"
+                            v-model:value="companyCardState.status"
                             disabled
                           />
                         </a-form-item>
@@ -62,14 +62,14 @@
                       <a-col span="6">
                         <a-form-item name="createDate" label="Дата создания">
                           <a-input
-                            v-model:value="entityCardState.createDate"
+                            v-model:value="companyCardState.createDate"
                             disabled
                           />
                         </a-form-item>
                       </a-col>
                       <a-col span="8">
                         <CreditHistoryResult
-                          :value="entityCardState.creditHistoryResult"
+                          :value="companyCardState.creditHistoryResult"
                           :loading="false"
                         />
                       </a-col>
@@ -77,7 +77,7 @@
                       <a-col span="6">
                         <a-form-item name="companyNumber" label="ОГРН/ОГРНИП">
                           <a-input
-                            v-model:value="entityCardState.companyNumber"
+                            v-model:value="companyCardState.companyNumber"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -85,7 +85,7 @@
                       <a-col span="6">
                         <a-form-item name="companyINN" label="ИНН/КПП">
                           <a-input
-                            v-model:value="entityCardState.companyINN"
+                            v-model:value="companyCardState.companyINN"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -97,7 +97,7 @@
                         >
                           <a-date-picker
                             v-model:value="
-                              entityCardState.companyRegistrationDate
+                              companyCardState.companyRegistrationDate
                             "
                             format="DD.MM.YYYY"
                             :disabled="false"
@@ -110,7 +110,7 @@
                           label="ФИО руководителя"
                         >
                           <a-input
-                            v-model:value="entityCardState.companyDirectorName"
+                            v-model:value="companyCardState.companyDirectorName"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -118,7 +118,7 @@
                       <a-col span="8">
                         <a-form-item name="postAddress" label="Почтовый адрес">
                           <a-input
-                            v-model:value="entityCardState.postAddress"
+                            v-model:value="companyCardState.postAddress"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -129,7 +129,7 @@
                           label="Юридический адрес"
                         >
                           <a-input
-                            v-model:value="entityCardState.lawAddress"
+                            v-model:value="companyCardState.lawAddress"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -140,7 +140,7 @@
                           label="Страна регистрации"
                         >
                           <b-select
-                            v-model:value="entityCardState.companyCountry"
+                            v-model:value="companyCardState.companyCountry"
                             :disabled="disabled"
                             :loadOptions="() => [{ label: 'РФ', value: '1' }]"
                           />
@@ -172,7 +172,7 @@
             <a-col span="7">
               <div class="tab-content">
                 <CardHistory
-                  v-model:value="entityCardState.history"
+                  v-model:value="companyCardState.history"
                   :disabled="disabled"
                   @addItem="onAddHistoryManually"
                   @removeItem="onRemoveHistoryManually"
@@ -187,7 +187,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, computed, reactive, ref } from "vue";
-import { EntityCardState } from "@/models/EntityEntity";
+import { CompanyCardState } from "@/models/CompanyEntity";
 import { useRoute } from "vue-router";
 import { initialCardState, cardHistoryColumns } from "./consts";
 import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
@@ -202,7 +202,7 @@ import CreditHistoryResult from "../common/CreditHistoryResult.vue";
 import router from "@/router";
 
 export default defineComponent({
-  name: "EntityCard",
+  name: "CompanyCard",
   components: {
     PageWrapper,
     CardHistory,
@@ -214,14 +214,14 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const cardMode = computed(() => route.params.mode as string);
-    const entityCardState = reactive<EntityCardState>(initialCardState);
+    const companyCardState = reactive<CompanyCardState>(initialCardState);
     const disabled = computed(() => cardOptionsMap[cardMode.value].disabled);
     const currentTab = ref("/mainInfo");
     const header = computed(() => cardOptionsMap[cardMode.value].header);
     onMounted(() => {
       switch (cardMode.value) {
         case CardMode.ADD:
-          Object.assign(entityCardState, initialCardState);
+          Object.assign(companyCardState, initialCardState);
           break;
         case CardMode.EDIT:
           break;
@@ -233,14 +233,14 @@ export default defineComponent({
       console.log("save");
     };
     const onAddHistoryManually = (item: CardHistoryState) => {
-      const lastItemId = entityCardState.history.sort(
+      const lastItemId = companyCardState.history.sort(
         (prev, curr) => prev.id - curr.id
       )[0];
       console.log(lastItemId);
-      entityCardState.history.push(item);
+      companyCardState.history.push(item);
     };
     const onRemoveHistoryManually = (id: number | string) => {
-      entityCardState.history = entityCardState.history.filter(
+      companyCardState.history = companyCardState.history.filter(
         (historyItem) => historyItem.id !== id
       );
     };
@@ -253,7 +253,7 @@ export default defineComponent({
       cardOptionsMap,
       header,
       cardMode,
-      entityCardState,
+      companyCardState,
       GRID_BASE_SPACING,
       GRID_BIG_SPACING,
       disabled,

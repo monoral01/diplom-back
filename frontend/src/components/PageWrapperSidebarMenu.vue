@@ -90,7 +90,7 @@
     </li>
     <li>
       <router-link
-        to="/entityRegistry"
+        to="/companyRegistry"
         class="menu-item"
         :class="currentRoute === '/registry' ? 'router-link-active' : false"
       >
@@ -156,9 +156,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "vuex";
 export default defineComponent({
   name: "PageWrapperSidebarMenu",
 

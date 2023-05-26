@@ -1,10 +1,10 @@
 import { CardStatus } from "@/models/Common";
-import { EntityCardState } from "@/models/EntityEntity";
+import { CompanyCardState } from "@/models/CompanyEntity";
 import dayjs from "dayjs";
 import { accountsMock, operationTableMock } from "../common/consts";
 import { AdditionalInfoState } from "@/models/AdditionalInfoEntity";
 
-export const initialCardState: EntityCardState = {
+export const initialCardState: CompanyCardState = {
   // id: undefined,
   // status: undefined,
   // createDate: undefined,
@@ -19,7 +19,7 @@ export const initialCardState: EntityCardState = {
   // lawAddress: "г Псков, ул Советская д 30",
   // files: [],
   // history: [],
-  id: 1,
+  companyId: "1",
   status: CardStatus.NEW,
   createDate: "15.05.2023",
   companyName: "ООО Рога и Копыта",

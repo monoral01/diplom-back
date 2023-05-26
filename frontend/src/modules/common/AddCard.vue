@@ -9,7 +9,7 @@
               <div @click="router.push('/personRegistry/card/add/mainInfo')">
                 <h3>Карточка физического лица</h3>
               </div>
-              <div @click="router.push('/entityRegistry/card/add/mainInfo')">
+              <div @click="router.push('/companyRegistry/card/add/mainInfo')">
                 <h3>Карточка юридического лица</h3>
               </div>
             </a-row>
@@ -22,38 +22,21 @@
 <script lang="ts">
 import { GRID_BIG_SPACING, GRID_BASE_SPACING } from "@/common/consts";
 import PageWrapper from "@/components/PageWrapper.vue";
-import { errorNotification } from "@/helpers/notification";
 import router from "@/router";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
+  name: "AddCard",
+  components: { PageWrapper },
   setup() {
-    const defaultValues = { login: undefined, password: undefined };
-    const authorizationFormState = ref(defaultValues);
     const formRef = ref();
-    const authorizationRules = {
-      login: [{ required: true, message: "Введите логин" }],
-      password: [{ required: true, message: "Введите пароль" }],
-    };
-    const login = () => {
-      formRef.value
-        .validate()
-        .then(() => {
-          router.push("/personRegistry");
-        })
-        .catch(() => errorNotification());
-    };
     return {
       GRID_BIG_SPACING,
       GRID_BASE_SPACING,
-      authorizationFormState,
-      authorizationRules,
-      login,
       formRef,
       router,
     };
   },
-  components: { PageWrapper },
 });
 </script>
 <style lang="scss" scoped>

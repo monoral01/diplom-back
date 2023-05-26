@@ -28,7 +28,7 @@ export const initialCardState: PersonCardState = {
   // factAddress: undefined,
   // addressOfResidence: undefined,
   // files: [],
-  id: "ФЛ123011",
+  personId: "ФЛ123011",
   status: CardStatus.NEW,
   createDate: "15.05.2023",
   lastName: "Сон",

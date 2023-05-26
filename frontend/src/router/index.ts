@@ -2,10 +2,10 @@ import StartPage from "@/modules/StartPage/StartPage.vue";
 import AddCard from "@/modules/common/AddCard.vue";
 import PersonCard from "@/modules/PersonCard/PersonCard.vue";
 import PersonCardAdditionalInfo from "@/modules/PersonCard/components/AdditionalInfo.vue";
-import EntityCardAdditionalInfo from "@/modules/EntityCard/components/AdditionalInfo.vue";
-import EntityCard from "@/modules/EntityCard/EntityCard.vue";
+import CompanyCardAdditionalInfo from "@/modules/CompanyCard/components/AdditionalInfo.vue";
+import CompanyCard from "@/modules/CompanyCard/CompanyCard.vue";
 import PersonRegistry from "@/modules/PersonRegistry/PersonRegistry.vue";
-import EntityRegistry from "@/modules/EntityRegistry/EntityRegistry.vue";
+import CompanyRegistry from "@/modules/CompanyRegistry/CompanyRegistry.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 const routes: Array<RouteRecordRaw> = [
@@ -41,22 +41,22 @@ const routes: Array<RouteRecordRaw> = [
     component: PersonCardAdditionalInfo,
   },
   {
-    path: "/entityRegistry",
-    name: "EntityRegistry",
+    path: "/companyRegistry",
+    name: "CompanyRegistry",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: EntityRegistry,
+    component: CompanyRegistry,
   },
   {
-    path: "/entityRegistry/card/:mode/:id?/mainInfo",
-    name: "EntityCard",
-    component: EntityCard,
+    path: "/companyRegistry/card/:mode/:id?/mainInfo",
+    name: "CompanyCard",
+    component: CompanyCard,
   },
   {
-    path: "/entityRegistry/card/:mode/:id?/additionalInfo",
-    name: "EntityCardAdditionalInfo",
-    component: EntityCardAdditionalInfo,
+    path: "/companyRegistry/card/:mode/:id?/additionalInfo",
+    name: "CompanyCardAdditionalInfo",
+    component: CompanyCardAdditionalInfo,
   },
 ];
 

@@ -20,3 +20,16 @@ export enum CellConst {
   INPUT = "input",
   DOWNLOAD_FILE = "downloadFile",
 }
+
+export enum SystemPermissions {
+  PersonCardCreate = "PersonCard_Create",
+  PersonCardEdit = "PersonCard_Edit",
+  PersonCardView = "PersonCard_View",
+  PersonCardDelete = "PersonCard_Delete",
+  CompanyCardCreate = "CompanyCard_Create",
+  CompanyCardEdit = "CompanyCard_Edit",
+  CompanyCardView = "CompanyCard_View",
+  CompanyCardDelete = "CompanyCard_Delete",
+  PersonRegistry = "PersonRegistry",
+  CompanyRegistry = "CompanyRegistry",
+}

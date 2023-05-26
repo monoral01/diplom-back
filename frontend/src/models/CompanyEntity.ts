@@ -3,10 +3,11 @@ import { CardHistoryState } from "./CardHistoryEntity";
 import { CardStatus } from "./Common";
 import { FileItem } from "./File";
 
-export type EntityCardState = {
-  id?: number;
-  status?: CardStatus;
+export type CompanyCardState = {
+  companyId?: string;
+  createUserId?: string;
   createDate?: string;
+  status?: CardStatus;
   companyName?: string;
   companyNumber?: number;
   creditHistoryResult?: boolean;

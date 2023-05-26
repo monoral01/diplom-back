@@ -57,13 +57,16 @@
 import { GRID_BASE_SPACING } from "@/common/consts";
 import { errorNotification } from "@/helpers/notification";
 import router from "@/router";
+import { getUserData } from "@/service/authorizationService";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "start-page",
   setup() {
     const defaultValues = { login: undefined, password: undefined };
-    const authorizationFormState = ref(defaultValues);
+    const authorizationFormState = ref<{ login?: string; password?: string }>(
+      defaultValues
+    );
     const formRef = ref();
     const authorizationRules = {
       login: [{ required: true, message: "Введите логин" }],
@@ -72,10 +75,19 @@ export default defineComponent({
     const login = () => {
       formRef.value
         .validate()
-        .then(() => {
-          router.push("/personRegistry");
+        .then(async () => {
+          try {
+            const { userData, token } = await getUserData(
+              authorizationFormState.value
+            );
+            localStorage.setItem("userData", JSON.stringify(userData));
+            router.push("/personRegistry");
+          } catch (error) {
+            errorNotification("Логин или пароль неверный, попробуйте ещё раз");
+            formRef.value.validate();
+          }
         })
-        .catch(() => errorNotification());
+        .catch(() => errorNotification("Некорректно заполнены поля"));
     };
     return {
       GRID_BASE_SPACING,
