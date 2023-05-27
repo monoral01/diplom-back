@@ -155,7 +155,6 @@ import { postUser } from "@/service/userRegistryService";
 import { RuleObject } from "ant-design-vue/lib/form";
 import { defineComponent, ref } from "vue";
 import { emailRegex, passwordRegex } from "./consts";
-import { baseService } from "@/service/baseService";
 
 export default defineComponent({
   name: "start-page",
@@ -251,10 +250,12 @@ export default defineComponent({
         .validate()
         .then(async () => {
           try {
-            const { userData, token } = await getUserData(
+            const { fio, token, permissions } = await getUserData(
               authorizationFormState.value
             );
-            localStorage.setItem("userData", JSON.stringify(userData));
+            localStorage.setItem("fio", fio);
+            localStorage.setItem("token", token);
+            localStorage.setItem("permissions", JSON.stringify(permissions));
             router.push("/personRegistry");
           } catch (error) {
             errorNotification("Логин или пароль неверный, попробуйте ещё раз");

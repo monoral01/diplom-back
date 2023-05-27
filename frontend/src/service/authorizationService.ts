@@ -1,5 +1,6 @@
 import { UserEntity } from "@/models/UserEntity";
 import { baseService } from "./baseService";
+import { SystemPermissions } from "@/common/consts";
 
 export const getUserData = async ({
   userLogin,
@@ -7,7 +8,11 @@ export const getUserData = async ({
 }: {
   userLogin?: string;
   userPassword?: string;
-}): Promise<{ token: string; userData: UserEntity }> => {
+}): Promise<{
+  token: string;
+  fio: string;
+  permissions: SystemPermissions[];
+}> => {
   const res = await baseService.post("/api/user/login", {
     userLogin,
     userPassword,
