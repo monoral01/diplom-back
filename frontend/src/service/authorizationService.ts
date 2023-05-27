@@ -2,20 +2,20 @@ import { UserEntity } from "@/models/UserEntity";
 import { baseService } from "./baseService";
 
 export const getUserData = async ({
-  login,
-  password,
+  userLogin,
+  userPassword,
 }: {
-  login?: string;
-  password?: string;
+  userLogin?: string;
+  userPassword?: string;
 }): Promise<{ token: string; userData: UserEntity }> => {
-  const res = await baseService.post("/api/authorization/login", {
-    login,
-    password,
+  const res = await baseService.post("/api/user/login", {
+    userLogin,
+    userPassword,
   });
   return res.data;
 };
 
 export const logout = async () => {
-  const res = await baseService.post("/api/authorization/logout", {});
+  const res = await baseService.post("/api/user/logout", {});
   return res.status;
 };

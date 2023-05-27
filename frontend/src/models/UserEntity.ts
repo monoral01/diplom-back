@@ -1,7 +1,8 @@
 import { SystemPermissions } from "@/common/consts";
 
 export interface UserEntity {
-  userId: string;
+  id: string;
+  uuid: string;
   fio: string;
   createrDate: string;
   permissions: SystemPermissions[];

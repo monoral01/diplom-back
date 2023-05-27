@@ -19,7 +19,7 @@
                 <a-col span="8">
                   <a-form-item label="Статус" name="status">
                     <b-select
-                      v-model:value="formState.status"
+                      v-model:value="formState.personStatus"
                       :allow-clear="true"
                       :load-options="
                         () => [
@@ -169,10 +169,12 @@ export default defineComponent({
   setup() {
     const loadingTable = ref(true);
     const formState = ref({
+      id: undefined,
       lastName: undefined,
       firstName: undefined,
       patrName: undefined,
       dateStart: undefined,
+      personStatus: undefined,
     });
     onMounted(() => {
       setTimeout(() => {

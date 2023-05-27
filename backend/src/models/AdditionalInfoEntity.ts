@@ -24,6 +24,7 @@ export type OperationHistoryState = {
   currency: Currency;
 };
 export type AccountState = {
+  id: number;
   timeCreate: string;
   accountStatus: AccountStatus;
   type: AccountType;

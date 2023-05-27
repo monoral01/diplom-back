@@ -3,7 +3,11 @@
     <a-col span="24">
       <a-row :gutter="GRID_BASE_SPACING" class="start-page__modal-wrapper">
         <a-col span="9"> </a-col>
-        <a-col span="6" class="start-page__modal-body">
+        <a-col
+          span="6"
+          class="start-page__modal-body"
+          v-if="!openCreateUserModal && !openSuccessModal"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 50 50"
@@ -21,7 +25,7 @@
             Введите логин и пароль:
           </div>
           <a-form
-            ref="formRef"
+            ref="authorizationformRef"
             :rules="authorizationRules"
             :model="authorizationFormState"
             class="authorization"
@@ -29,21 +33,110 @@
           >
             <a-row :gutter="GRID_BASE_SPACING">
               <a-col span="24">
-                <a-form-item name="login" label="Логин">
-                  <a-input v-model:value="authorizationFormState.login" />
+                <a-form-item name="userLogin" label="Логин">
+                  <a-input v-model:value="authorizationFormState.userLogin" />
                 </a-form-item>
               </a-col>
               <a-col span="24">
-                <a-form-item name="password" label="Пароль">
+                <a-form-item
+                  name="userPassword"
+                  label="Пароль"
+                  placeholder="Password"
+                >
                   <a-input-password
                     :visibilityToggle="false"
-                    v-model:value="authorizationFormState.password"
+                    v-model:value="authorizationFormState.userPassword"
                   />
                 </a-form-item>
               </a-col>
               <a-col span="24"> </a-col>
-              <a-col span="24">
+              <a-col span="24" class="buttons-wrapper__left">
                 <a-button @click="login">Войти</a-button>
+                <a-button @click="openCreateUserModal = true"
+                  >Регистрация</a-button
+                >
+              </a-col>
+            </a-row>
+          </a-form>
+        </a-col>
+        <a-col
+          v-else-if="openSuccessModal"
+          class="start-page__modal-body"
+          span="6"
+        >
+          <a-row :gutter="GRID_BASE_SPACING">
+            <a-col span="24"><h3>Регистрация прошла успешно.</h3></a-col>
+            <a-col span="24" class="buttons-wrapper__left">
+              <a-button
+                @click="
+                  openCreateUserModal = false;
+                  openSuccessModal = false;
+                "
+                >Войти</a-button
+              >
+            </a-col>
+          </a-row>
+        </a-col>
+        <a-col v-else class="start-page__modal-body" span="6">
+          <div><h3>Введите данные для регистрации аккаунта:</h3></div>
+          <a-form
+            ref="registrationFormRef"
+            :rules="registrationRules"
+            :model="registrationFormState"
+            class="authorization"
+            layout="vertical"
+          >
+            <a-row :gutter="GRID_BASE_SPACING">
+              <a-col span="24">
+                <a-form-item name="userLogin" label="Логин">
+                  <a-input v-model:value="registrationFormState.userLogin" />
+                </a-form-item>
+              </a-col>
+              <a-col span="24">
+                <a-form-item
+                  name="userPassword"
+                  label="Пароль"
+                  has-feedback
+                  placeholder="Password"
+                >
+                  <a-input-password
+                    :visibilityToggle="false"
+                    v-model:value="registrationFormState.userPassword"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col span="24">
+                <a-form-item
+                  name="repeatPassword"
+                  label="Повторите пароль"
+                  has-feedback
+                  placeholder="Password"
+                >
+                  <a-input-password
+                    :visibilityToggle="false"
+                    v-model:value="registrationFormState.repeatPassword"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col span="24">
+                <a-form-item name="lastName" label="Фамилия">
+                  <a-input v-model:value="registrationFormState.lastName" />
+                </a-form-item>
+              </a-col>
+              <a-col span="24">
+                <a-form-item name="firstName" label="Имя">
+                  <a-input v-model:value="registrationFormState.firstName" />
+                </a-form-item>
+              </a-col>
+              <a-col span="24">
+                <a-form-item name="Фамилия" label="Отчество">
+                  <a-input v-model:value="registrationFormState.patrName" />
+                </a-form-item>
+              </a-col>
+              <a-col span="24"> </a-col>
+              <a-col span="24" class="buttons-wrapper__left">
+                <a-button @click="createUser">Создать аккаунт</a-button>
+                <a-button @click="openCreateUserModal = false">Назад</a-button>
               </a-col>
             </a-row>
           </a-form>
@@ -58,22 +151,103 @@ import { GRID_BASE_SPACING } from "@/common/consts";
 import { errorNotification } from "@/helpers/notification";
 import router from "@/router";
 import { getUserData } from "@/service/authorizationService";
+import { postUser } from "@/service/userRegistryService";
+import { RuleObject } from "ant-design-vue/lib/form";
 import { defineComponent, ref } from "vue";
+import { emailRegex, passwordRegex } from "./consts";
+import { baseService } from "@/service/baseService";
 
 export default defineComponent({
   name: "start-page",
   setup() {
-    const defaultValues = { login: undefined, password: undefined };
-    const authorizationFormState = ref<{ login?: string; password?: string }>(
-      defaultValues
-    );
-    const formRef = ref();
-    const authorizationRules = {
-      login: [{ required: true, message: "Введите логин" }],
-      password: [{ required: true, message: "Введите пароль" }],
+    const defaultValues = { userLogin: undefined, userPassword: undefined };
+    const authorizationFormState = ref<{
+      userLogin?: string;
+      userPassword?: string;
+    }>(defaultValues);
+    const registrationFormState = ref<{
+      userLogin?: string;
+      userPassword?: string;
+      repeatPassword?: string;
+      lastName?: string;
+      firstName?: string;
+      patrName?: string;
+    }>({
+      ...defaultValues,
+      repeatPassword: undefined,
+      lastName: undefined,
+      firstName: undefined,
+      patrName: undefined,
+    });
+    const openCreateUserModal = ref(false);
+    const openSuccessModal = ref(false);
+    const authorizationformRef = ref();
+    const registrationFormRef = ref();
+    const validatePass = async (rule: RuleObject, value: string) => {
+      console.log(value);
+      if (value === "" || !value) {
+        return Promise.reject("Введите пароль");
+      } else if (!value.match(passwordRegex)) {
+        return Promise.reject(
+          "Пароль должен содержать минимум одну букву, одну цифру и один спец. символ (напр. - @$!%*#?&)"
+        );
+      } else {
+        if (
+          registrationFormRef.value &&
+          registrationFormState.value.repeatPassword !== ""
+        ) {
+          registrationFormRef.value.validateFields("repeatPassword");
+        }
+        return Promise.resolve();
+      }
     };
+
+    const validatePass2 = async (rule: RuleObject, value: string) => {
+      if (value === "" || !value) {
+        return Promise.reject("Пожалуйста, повторите пароль");
+      } else if (value !== registrationFormState.value.userPassword) {
+        return Promise.reject("Пароли не совпадают");
+      } else {
+        return Promise.resolve();
+      }
+    };
+
+    const validateLogin = async (rule: RuleObject, value: string) => {
+      if (value === "" || !value) {
+        return Promise.reject("Введите Email");
+      } else if (!value.match(emailRegex)) {
+        return Promise.reject("Некорректный email");
+      }
+      return Promise.resolve();
+    };
+
+    const authorizationRules = {
+      userLogin: [
+        { required: true, validator: validateLogin, trigger: "change" },
+      ],
+      userPassword: [
+        { required: true, validator: validatePass, trigger: "change" },
+      ],
+    };
+
+    const registrationRules = {
+      userLogin: [
+        { required: true, validator: validateLogin, trigger: "change" },
+      ],
+      userPassword: [
+        { required: true, validator: validatePass, trigger: "change" },
+      ],
+      repeatPassword: [{ validator: validatePass2, trigger: "change" }],
+      lastName: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      firstName: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+    };
+
     const login = () => {
-      formRef.value
+      authorizationformRef.value
         .validate()
         .then(async () => {
           try {
@@ -84,17 +258,44 @@ export default defineComponent({
             router.push("/personRegistry");
           } catch (error) {
             errorNotification("Логин или пароль неверный, попробуйте ещё раз");
-            formRef.value.validate();
+            authorizationformRef.value.validate();
           }
         })
         .catch(() => errorNotification("Некорректно заполнены поля"));
     };
+    const createUser = async () => {
+      registrationFormRef.value.validate().then(async () => {
+        try {
+          const newUserData = {
+            userLogin: registrationFormState.value.userLogin,
+            userPassword: registrationFormState.value.userPassword,
+            fio: `${registrationFormState.value.lastName} ${
+              registrationFormState.value.firstName
+            } ${registrationFormState.value.patrName ?? ""}`,
+          };
+          const status = await postUser(newUserData);
+          if (status === 201) {
+            openSuccessModal.value = true;
+          }
+        } catch (err) {
+          errorNotification(
+            "При создании учётной записи произошла ошибка, обратитесь к администратору системы"
+          );
+        }
+      });
+    };
     return {
       GRID_BASE_SPACING,
       authorizationFormState,
+      registrationFormState,
       authorizationRules,
+      registrationRules,
       login,
-      formRef,
+      createUser,
+      authorizationformRef,
+      registrationFormRef,
+      openCreateUserModal,
+      openSuccessModal,
     };
   },
 });

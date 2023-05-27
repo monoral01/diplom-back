@@ -5,8 +5,8 @@ export const getCompanyRegistry = async () => {
   return res.data;
 };
 
-export const postCompanyRegistry = async (body: any) => {
+export const postPerson = async (body: any) => {
   console.log(body);
-  const res = await baseService.post("/api/personRegistry", body);
+  const res = await baseService.post("/api/persons", body);
   return res.data;
 };

@@ -4,7 +4,7 @@
       <div class="buttons-wrapper__right card__buttons">
         <a-button type="primary" ghost>Сохранить</a-button>
         <a-button type="primary">закрыть</a-button>
-        <a-button type="primary" :disabled="!companyCardState.status"
+        <a-button type="primary" :disabled="!companyCardState.companyStatus"
           >удалить</a-button
         >
       </div>
@@ -54,7 +54,7 @@
                       <a-col span="6">
                         <a-form-item name="status" label="Статус карточки">
                           <a-input
-                            v-model:value="companyCardState.status"
+                            v-model:value="companyCardState.companyStatus"
                             disabled
                           />
                         </a-form-item>

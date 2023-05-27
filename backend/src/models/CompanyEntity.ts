@@ -1,4 +1,3 @@
-import { Dayjs } from "dayjs";
 import { CardHistoryState } from "./CardHistoryEntity";
 import { CardStatus } from "./Common";
 import { FileItem } from "./File";
@@ -15,7 +14,7 @@ export type CompanyCardState = {
   companyDirectorName?: string;
   companyCountry?: { label: string; value: string };
   companyAddress?: string;
-  companyRegistrationDate?: Dayjs;
+  companyRegistrationDate?: string;
   postAddress?: string;
   lawAddress?: string;
   history: CardHistoryState[];

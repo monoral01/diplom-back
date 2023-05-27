@@ -4,9 +4,9 @@ import { CardStatus } from "./Common";
 import { FileItem } from "./File";
 
 export type PersonCardState = {
-  personId?: string;
+  id?: string;
   createDate?: string;
-  status?: CardStatus;
+  personStatus?: CardStatus;
   lastName?: string;
   firstName?: string;
   patrName?: string;

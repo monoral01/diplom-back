@@ -1,59 +1,115 @@
-import { randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken'
-import express, { Express, Request, Response } from 'express';
-import mysql from 'mysql';
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+// import mysql from 'mysql2';
+// import dayjs from 'dayjs';
+// import { CompanyCardState } from '@/models/CompanyEntity';
+// import { UserEntity } from '@/models/UserEntity';
+// import { formatToDB } from '@/utils/utils';
+// import { randomUUID } from 'node:crypto';
+// import { PoolConnection } from 'mysql2/promise';
+import { userDataBaseService } from './database';
 
-const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'admin',
-  password : 'Password_123',
-  database : 'ISCAS'
-});
-const app = express();
-const urlencodedParser = express.urlencoded({extended: false});
+dotenv.config();
 const port = process.env.PORT || 8081;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const app = express();
+
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`App working on PORT ${port}`);
-})
-app.get('/api/getCompanyRegistry', (req, res) => {
-  res.json({token: "129381hj12hf"});
-});
-app.post('/api/authorization/login', urlencodedParser, (req, res) => {
-  if(!req.body) return res.sendStatus(400);
-  const {login, password} = req.body;
-  const token = jwt.sign({
-    login, password
-  }, 'secretwebtoken')
-  const users = [{login: 'biba', password: '123', userId: '1', 
-  permissions: [
-    'PersonCard_Delete', 'PersonCard_Create',
-    'PersonCard_Edit', 'PersonRegistry',
-    ]
-  }];
-  const currUser = users.find((user) => user.login === login && user.password === password);
-  if (currUser) {
-    res.json({token, userData: {userId: currUser.userId, permissions: currUser.permissions}});
+const urlencodedParser = express.urlencoded({ extended: false });
+
+const startApp = async () => {
+  try {
+    app.listen(port, () => {
+      console.log(`App working on PORT ${port}`);
+    })
   }
-  return res.sendStatus(401);
+  catch {
+    console.log('some error occured...')
+  }
+}
+
+startApp();
+
+app
+  .post("/api/user", urlencodedParser, async (req, res) => {
+    console.log(req.body);
+    const userData = req.body;
+    try {
+      const dbResult = await userDataBaseService.insertUser(userData).catch(err => console.log(err));
+      res.status(201).send(dbResult[0].insertId);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400);
+    }
+  })
+  .post("/api/user/login", urlencodedParser, async (req, res) => {
+    console.log(req.body);
+    const { userLogin, userPassword } = req.body;
+    try {
+      const candidateUser = await userDataBaseService.getUserByLogin(userLogin).catch(err => console.log(err));
+      if (candidateUser) {
+        const passwordResult = bcrypt.compareSync(userPassword, candidateUser.userPassword);
+        if (passwordResult) {
+          const userPermissions = await userDataBaseService.getUserPermissions(+candidateUser.id);
+          const token = jwt.sign({userLogin: candidateUser.userLogin, uuid: candidateUser.uuid}, '', {expiresIn: 3600});
+          res.status(200).send({token, userData: candidateUser.fio, permissions: userPermissions});
+        }
+        else {
+          res.status(401).send({message: 'Пароль не совпадает, попробуйте снова'});
+        }
+      }
+      else {
+        res.status(404).send({ message: 'Пользователь с таким логином не найден' });
+      }
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400);
+    }
+  })
+  .put("/api/user", urlencodedParser, async (req, res) => {
+    console.log(req.body);
+    const userData = req.body;
+    try {
+      const dbResult = await userDataBaseService.updateUser(userData).catch(err => console.log(err));
+      res.status(201).send(dbResult[0].insertId);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400);
+    }
+  })
+  .get("/api/user/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await userDataBaseService.getUserByID(+id);
+      res.status(200).send(user);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400);
+    }
+  });
+
+app.post("/api/user", urlencodedParser, async (req, res) => {
+  console.log(req.body);
+  const userData = req.body;
+  try {
+    const dbResult = await userDataBaseService.insertUser(userData).catch(err => console.log(err));
+    res.status(201).send(dbResult[0].insertId);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(400);
+  }
+})
+app.get("/user/registry", async (req, res) => {
+  const users = await userDataBaseService.getUsers();
+  res.status(201).send(users);
+  // res.send(notes)
 })
 
-connection.connect(() => {
-  console.log('connect ok');
-});
- 
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results[0].solution);
-});
- 
-connection.end();
-
-app.post('/api/authorization/logout', urlencodedParser, (req, res) => {
-  return res.sendStatus(200);
-})

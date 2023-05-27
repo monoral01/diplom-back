@@ -11,7 +11,7 @@ import {
 export const operationTableMock: OperationState[] = [
   {
     time: "16.05.2023 12:52",
-    status: OperationStatus.SUCCESS,
+    operationStatus: OperationStatus.SUCCESS,
     message: undefined,
     description: "16.05.2023 Перевод на счёт 4230118000000123131545 500 RUB",
     type: OperationType.TRANSFER_TO_YOURSELF,
@@ -29,7 +29,7 @@ export const operationTableMock: OperationState[] = [
   },
   {
     time: "16.05.2023 12:52",
-    status: OperationStatus.SUCCESS,
+    operationStatus: OperationStatus.SUCCESS,
     message: undefined,
     description: "16.05.2023 Перевод на счёт 4230118000000123131545 500 RUB",
     type: OperationType.TRANSFER_TO_YOURSELF,
@@ -47,7 +47,7 @@ export const operationTableMock: OperationState[] = [
   },
   {
     time: "16.05.2023 12:52",
-    status: OperationStatus.SUCCESS,
+    operationStatus: OperationStatus.SUCCESS,
     message: undefined,
     description: "16.05.2023 Перевод на счёт 4230118000000123131545 500 RUB",
     type: OperationType.TRANSFER_TO_YOURSELF,
@@ -68,7 +68,7 @@ export const operationTableMock: OperationState[] = [
 export const accountsMock: AccountState[] = [
   {
     timeCreate: "16.05.2023 12:52",
-    status: AccountStatus.ACTIVE,
+    accountStatus: AccountStatus.ACTIVE,
     type: AccountType.CREDIT,
     holder: "Кирилл С.",
     phoneNumber: "+7 900 000 00 00",
@@ -86,7 +86,7 @@ export const accountsMock: AccountState[] = [
   },
   {
     timeCreate: "08.08.2021 12:52",
-    status: AccountStatus.ACTIVE,
+    accountStatus: AccountStatus.ACTIVE,
     type: AccountType.BUDGET,
     holder: "Кирилл С.",
     phoneNumber: "+7 900 000 00 00",

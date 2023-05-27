@@ -1,23 +1,30 @@
-import { Dayjs } from "dayjs";
 import { CardHistoryState } from "./CardHistoryEntity";
 import { CardStatus } from "./Common";
 import { FileItem } from "./File";
 
-export type CompanyCardState = {
+export type PersonCardState = {
   id?: string;
-  userId?: string;
   createDate?: string;
-  companyStatus?: CardStatus;
+  personStatus?: CardStatus;
+  lastName?: string;
+  firstName?: string;
+  patrName?: string;
+  creditHistoryResult?: boolean;
+  reasonCredit?: string;
+  birthDate?: string;
   companyName?: string;
   companyNumber?: number;
-  creditHistoryResult?: boolean;
   companyINN?: number;
   companyDirectorName?: string;
   companyCountry?: { label: string; value: string };
-  companyAddress?: string;
-  companyRegistrationDate?: Dayjs;
   postAddress?: string;
   lawAddress?: string;
+  companyRegistrationDate?: string;
+  passportSerialNumber?: number;
+  passportNumber?: number;
+  issuedBy?: string;
+  factAddress?: string;
+  addressOfResidence?: string;
   history: CardHistoryState[];
   files: FileItem[];
 };
