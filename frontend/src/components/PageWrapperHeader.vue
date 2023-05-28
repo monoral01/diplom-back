@@ -21,9 +21,9 @@
           <a-tooltip placement="left">
             <template #title>
               <span>
-                {{ "Чеботарев" }}
-                {{ "Кирилл" }}
-                {{ "Романович" }}
+                {{ fio.lastName }}
+                {{ fio.firstName }}
+                {{ fio.patrName }}
               </span>
             </template>
             <svg
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -69,9 +69,21 @@ export default defineComponent({
       console.log("logout");
       router.push("/");
     };
-
+    const fio = computed(() => {
+      const fullName = localStorage.getItem("fio");
+      if (fullName) {
+        const fullNameArray = fullName.split(" ");
+        return {
+          lastName: fullNameArray[0],
+          firstName: fullNameArray[1],
+          patrName: fullNameArray[3],
+        };
+      }
+      return { lastName: "", firstName: "", patrName: "" };
+    });
     return {
       logout,
+      fio,
     };
   },
 });

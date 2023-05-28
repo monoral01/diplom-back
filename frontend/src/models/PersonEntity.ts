@@ -10,7 +10,6 @@ export type PersonCardState = {
   lastName?: string;
   firstName?: string;
   patrName?: string;
-  creditHistoryResult?: boolean;
   reasonCredit?: string;
   birthDate?: Dayjs;
   companyName?: string;

@@ -14,7 +14,6 @@ export const initialCardState: PersonCardState = {
   // firstName: undefined,
   // lastName: undefined,
   // patrName: undefined,
-  // creditHistoryResult: undefined,
   // reasonCredit: undefined,
   // companyName: undefined,
   // companyNumber: undefined,
@@ -34,7 +33,7 @@ export const initialCardState: PersonCardState = {
   lastName: "Сон",
   firstName: "Кирилл",
   patrName: "Романович",
-  creditHistoryResult: true,
+
   reasonCredit: "Маленькая кредитная история",
   companyName: "ООО Рога и Копыта",
   companyNumber: 12983091823908,

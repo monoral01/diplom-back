@@ -4,7 +4,7 @@
       <div class="buttons-wrapper__right card__buttons">
         <a-button type="primary" ghost>Сохранить</a-button>
         <a-button type="primary">закрыть</a-button>
-        <a-button type="primary" :disabled="!personCardState.status"
+        <a-button type="primary" :disabled="!personCardState.personStatus"
           >удалить</a-button
         >
       </div>
@@ -51,9 +51,12 @@
                             </a-form-item>
                           </a-col>
                           <a-col span="12">
-                            <a-form-item name="status" label="Статус карточки">
+                            <a-form-item
+                              name="personStatus"
+                              label="Статус карточки"
+                            >
                               <a-input
-                                v-model:value="personCardState.status"
+                                v-model:value="personCardState.personStatus"
                                 disabled
                               />
                             </a-form-item>
@@ -94,26 +97,6 @@
                             </a-form-item>
                           </a-col>
                         </a-row>
-                      </a-col>
-                      <a-col span="8">
-                        <CreditHistoryResult
-                          :value="personCardState.creditHistoryResult"
-                          :loading="false"
-                        />
-                      </a-col>
-                      <a-col
-                        span="16"
-                        v-if="personCardState.creditHistoryResult === false"
-                      >
-                        <a-form-item
-                          name="patrName"
-                          label="Причина невыдачи кредита"
-                        >
-                          <a-input
-                            v-model:value="personCardState.reasonCredit"
-                            disabled
-                          />
-                        </a-form-item>
                       </a-col>
                       <a-col span="24">
                         <h3>Документ</h3>
@@ -275,21 +258,6 @@
                       <a-col span="24" v-else>
                         <h4>Нет сведений о компании</h4>
                       </a-col>
-                      <a-col span="24">
-                        <b-collapse header="Документы">
-                          <a-row :gutter="GRID_BASE_SPACING">
-                            <a-col span="24">
-                              <!-- <a-button
-                                type="primary"
-                                ghost
-                                @click="saveRequisites"
-                                >Приложить файл</a-button
-                              > -->
-                              <MultipleFileUpload />
-                            </a-col>
-                          </a-row>
-                        </b-collapse>
-                      </a-col>
                     </a-row>
                   </a-col>
                 </a-row>
@@ -321,13 +289,10 @@ import { useRoute } from "vue-router";
 import { initialCardState } from "./consts";
 import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
 import PageWrapper from "@/components/PageWrapper.vue";
-import BCollapse from "@/components/BCollapse.vue";
 import CardHistory from "../common/CardHistory.vue";
 import { CardHistoryState } from "@/models/CardHistoryEntity";
 import { cardOptionsMap, CardMode } from "@/models/Common";
-import MultipleFileUpload from "@/components/MultipleFileUpload/MultipleFileUpload.vue";
 import BSelect from "@/components/BSelect.vue";
-import CreditHistoryResult from "../common/CreditHistoryResult.vue";
 import router from "@/router";
 
 export default defineComponent({
@@ -335,10 +300,7 @@ export default defineComponent({
   components: {
     PageWrapper,
     CardHistory,
-    BCollapse,
-    MultipleFileUpload,
     BSelect,
-    CreditHistoryResult,
   },
   setup() {
     const route = useRoute();

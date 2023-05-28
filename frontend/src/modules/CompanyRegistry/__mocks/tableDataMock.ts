@@ -2,7 +2,6 @@ export const tableDataMock = [
   {
     id: "ЮЛ1000019",
     companyStatus: "Новая",
-    creditHistoryResult: true,
     companyName: "ООО Рога и Копыта",
     companyINN: "812381231",
     companyNumber: "12903810928",
@@ -13,7 +12,6 @@ export const tableDataMock = [
   {
     id: "ЮЛ1000018",
     companyStatus: "Новая",
-    creditHistoryResult: false,
     companyName: "ИП Горемыкина Юлия Кирилловна",
     companyINN: "123123132",
     companyNumber: "0919284128",
@@ -24,7 +22,6 @@ export const tableDataMock = [
   {
     id: "ЮЛ1000017",
     companyStatus: "Новая",
-    creditHistoryResult: true,
     companyName: "ООО Минами",
     companyINN: "3453787878",
     companyNumber: "64757457457",
@@ -35,7 +32,6 @@ export const tableDataMock = [
   {
     id: "ЮЛ1000016",
     companyStatus: "Новая",
-    creditHistoryResult: true,
     companyName: "ПАО Сбербанк",
     companyINN: "7707083893",
     companyNumber: "1027700132195",
@@ -46,7 +42,6 @@ export const tableDataMock = [
   {
     id: "ЮЛ1000015",
     companyStatus: "Новая",
-    creditHistoryResult: true,
     companyName: "ИП Чач Артур Бибович",
     companyINN: "1241241411",
     companyNumber: "4574848445312",

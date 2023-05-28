@@ -10,7 +10,6 @@ export type CompanyCardState = {
   companyStatus?: CardStatus;
   companyName?: string;
   companyNumber?: number;
-  creditHistoryResult?: boolean;
   companyINN?: number;
   companyDirectorName?: string;
   companyCountry?: { label: string; value: string };

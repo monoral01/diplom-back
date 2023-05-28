@@ -8,14 +8,8 @@ export const registryColumns = [
   },
   {
     title: "Статус",
-    dataIndex: "status",
+    dataIndex: "companyStatus",
     width: 200,
-  },
-  {
-    title: "Можно выдать кредит",
-    dataIndex: "creditHistoryResult",
-    width: 200,
-    slot: CellConst.BOOL,
   },
   {
     title: "Название",

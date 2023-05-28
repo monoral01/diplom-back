@@ -17,7 +17,7 @@
                   </a-form-item>
                 </a-col>
                 <a-col span="8">
-                  <a-form-item label="Статус" name="status">
+                  <a-form-item label="Статус" name="personStatus">
                     <b-select
                       v-model:value="formState.personStatus"
                       :allow-clear="true"
@@ -69,20 +69,17 @@
             </a-col>
             <a-col span="24">
               <div class="buttons-wrapper__left">
-                <a-button type="default">
+                <a-button type="default" @click="search">
                   <template #icon><SearchOutlined /></template>Поиск
                 </a-button>
-                <a-button type="default">
+                <a-button type="default" @click="reset">
                   <template #icon><StopOutlined /></template> Очистить фильтры
                 </a-button>
-                <a-button type="default">
-                  <template #icon><FileExcelOutlined /></template> Экспорт в ODS
-                </a-button>
-                <a-button type="default">
+                <a-button type="default" @click="openCard">
                   <template #icon><FormOutlined /></template
                   >Редактировать</a-button
                 >
-                <a-button type="default">
+                <a-button type="default" @click="deleteCard">
                   <template #icon><DeleteOutlined /></template>Удалить
                 </a-button>
               </div>
@@ -91,9 +88,9 @@
               <b-table
                 :pagination="true"
                 :columns="registryColumns"
-                :total="40"
+                :total="dataSource.length"
                 :loading="loadingTable"
-                :data-source="tableDataMock"
+                :data-source="dataSource"
                 :page-size="currentPageSize"
                 :pageSizeOptions="['20', '50', '100']"
                 :current="currentPage"
@@ -102,8 +99,6 @@
                 :row-change="true"
                 @selectedRowChange="selectedRowChange"
                 @paginationChange="paginationChange"
-                @sortChange="sortChange"
-                @updateColumns="updateColumns"
               />
             </a-col>
           </a-row>
@@ -148,11 +143,17 @@ import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
 import {
   SearchOutlined,
   DeleteOutlined,
-  FileExcelOutlined,
   StopOutlined,
   FormOutlined,
 } from "@ant-design/icons-vue";
 import BSelect from "@/components/BSelect.vue";
+import {
+  deletePerson,
+  getPersonRegistry,
+} from "@/service/personRegistryService";
+import { useTable } from "@/helpers/useTable";
+import router from "@/router";
+import { errorNotification, infoNotification } from "@/helpers/notification";
 
 export default defineComponent({
   name: "PersonRegistry",
@@ -162,12 +163,10 @@ export default defineComponent({
     PageWrapper,
     SearchOutlined,
     DeleteOutlined,
-    FileExcelOutlined,
     StopOutlined,
     FormOutlined,
   },
   setup() {
-    const loadingTable = ref(true);
     const formState = ref({
       id: undefined,
       lastName: undefined,
@@ -176,7 +175,50 @@ export default defineComponent({
       dateStart: undefined,
       personStatus: undefined,
     });
-    onMounted(() => {
+    const {
+      dataSource,
+      total,
+      currentFilters,
+      currentPageSize,
+      currentPage,
+      loadingTable,
+      selectedRowKey,
+      selectedRow,
+      paginationChange,
+      selectedRowChange,
+    } = useTable(getPersonRegistry);
+    const reset = () => {
+      formState.value.id = undefined;
+      formState.value.lastName = undefined;
+      formState.value.firstName = undefined;
+      formState.value.patrName = undefined;
+      formState.value.dateStart = undefined;
+      formState.value.personStatus = undefined;
+    };
+    const search = async () => {
+      dataSource.value = await getPersonRegistry({
+        page: currentPage.value,
+        pageSize: currentPageSize.value,
+        filters: formState.value,
+      });
+    };
+    const openCard = () => {
+      router.push(`/personRegistry/card/edit/${selectedRowKey.value}/mainInfo`);
+    };
+    const deleteCard = async () => {
+      try {
+        await deletePerson(selectedRowKey.value);
+        infoNotification("Запись удалена");
+      } catch (err) {
+        errorNotification("При удалении произошла ошибка");
+      }
+    };
+    onMounted(async () => {
+      dataSource.value = await getPersonRegistry({
+        page: 1,
+        pageSize: 5,
+        filters: formState.value,
+      });
       setTimeout(() => {
         loadingTable.value = false;
       }, 1600);
@@ -188,6 +230,19 @@ export default defineComponent({
       tableDataMock,
       formState,
       loadingTable,
+      dataSource,
+      total,
+      currentFilters,
+      currentPageSize,
+      currentPage,
+      selectedRowKey,
+      selectedRow,
+      paginationChange,
+      selectedRowChange,
+      reset,
+      search,
+      openCard,
+      deleteCard,
     };
   },
 });

@@ -52,7 +52,10 @@
                         </a-form-item>
                       </a-col>
                       <a-col span="6">
-                        <a-form-item name="status" label="Статус карточки">
+                        <a-form-item
+                          name="companyStatus"
+                          label="Статус карточки"
+                        >
                           <a-input
                             v-model:value="companyCardState.companyStatus"
                             disabled
@@ -67,13 +70,6 @@
                           />
                         </a-form-item>
                       </a-col>
-                      <a-col span="8">
-                        <CreditHistoryResult
-                          :value="companyCardState.creditHistoryResult"
-                          :loading="false"
-                        />
-                      </a-col>
-                      <a-col span="16"></a-col>
                       <a-col span="6">
                         <a-form-item name="companyNumber" label="ОГРН/ОГРНИП">
                           <a-input
@@ -146,21 +142,6 @@
                           />
                         </a-form-item>
                       </a-col>
-                      <a-col span="24">
-                        <b-collapse header="Документы">
-                          <a-row :gutter="GRID_BASE_SPACING">
-                            <a-col span="24">
-                              <!-- <a-button
-                                type="primary"
-                                ghost
-                                @click="saveRequisites"
-                                >Приложить файл</a-button
-                              > -->
-                              <MultipleFileUpload />
-                            </a-col>
-                          </a-row>
-                        </b-collapse>
-                      </a-col>
                     </a-row>
                   </a-col>
                 </a-row>
@@ -192,13 +173,10 @@ import { useRoute } from "vue-router";
 import { initialCardState, cardHistoryColumns } from "./consts";
 import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
 import PageWrapper from "@/components/PageWrapper.vue";
-import BCollapse from "@/components/BCollapse.vue";
 import { CardHistoryState } from "@/models/CardHistoryEntity";
 import CardHistory from "../common/CardHistory.vue";
 import { cardOptionsMap, CardMode } from "@/models/Common";
-import MultipleFileUpload from "@/components/MultipleFileUpload/MultipleFileUpload.vue";
 import BSelect from "@/components/BSelect.vue";
-import CreditHistoryResult from "../common/CreditHistoryResult.vue";
 import router from "@/router";
 
 export default defineComponent({
@@ -206,10 +184,7 @@ export default defineComponent({
   components: {
     PageWrapper,
     CardHistory,
-    BCollapse,
-    MultipleFileUpload,
     BSelect,
-    CreditHistoryResult,
   },
   setup() {
     const route = useRoute();

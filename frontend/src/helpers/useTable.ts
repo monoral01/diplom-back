@@ -1,26 +1,24 @@
 import { Ref, ref } from "vue";
-import { DEFAULT_PAGE_SIZE, DEFAULT_SORTER, FIRST_PAGE } from "@/common/consts";
+import { DEFAULT_PAGE_SIZE, FIRST_PAGE } from "@/common/consts";
 import { errorNotification } from "./notification";
 
-type Service<T> = (
-  page: number,
-  pageSize: number,
-  sort: string,
-  filters: any[]
-) => Promise<{
+type Service<T> = ({
+  page,
+  pageSize,
+  filters,
+}: {
+  page: number;
+  pageSize: number;
+  filters: any[];
+}) => Promise<{
   data: T[];
-  total: number;
 }>;
 
-export const createTable = <T>(
-  service: Service<T>,
-  customSorter?: (currentField: string) => string
-) => {
+export const useTable = <T>(service: Service<T>) => {
   const total = ref(0);
   const currentFilters = ref();
   const currentPage = ref(FIRST_PAGE);
   const currentPageSize = ref(DEFAULT_PAGE_SIZE);
-  const currentSorter = ref(DEFAULT_SORTER);
   const selectedRowKey = ref();
   const selectedRow = ref();
   const loadingTable = ref(false);
@@ -37,12 +35,11 @@ export const createTable = <T>(
   const paginationChange = async (page: number, pageSize: number) => {
     loadingTable.value = true;
     try {
-      const res = await service(
+      const res = await service({
         page,
         pageSize,
-        currentSorter.value,
-        currentFilters.value
-      );
+        filters: currentFilters.value,
+      });
 
       dataSource.value = res.data;
       currentPage.value = page;
@@ -54,49 +51,16 @@ export const createTable = <T>(
     }
   };
 
-  const sortChange = async (field: string, order: string) => {
-    loadingTable.value = true;
-    try {
-      let sorter = field;
-
-      if (customSorter) {
-        sorter = customSorter(field);
-      }
-
-      if (order === "descend") {
-        sorter = `-${sorter}`;
-      }
-
-      currentPage.value = FIRST_PAGE;
-
-      const res = await service(
-        currentPage.value,
-        currentPageSize.value,
-        sorter,
-        currentFilters.value
-      );
-
-      dataSource.value = res.data;
-      currentSorter.value = sorter;
-    } catch {
-      errorNotification("При обновлении сортировки произошла ошибка");
-    } finally {
-      loadingTable.value = false;
-    }
-  };
-
   return {
     dataSource,
     total,
     loadingTable,
     currentFilters,
-    currentSorter,
     currentPage,
     currentPageSize,
     selectedRowKey,
     selectedRow,
     paginationChange,
-    sortChange,
     selectedRowChange,
   };
 };

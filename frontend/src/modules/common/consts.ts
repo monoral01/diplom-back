@@ -112,7 +112,7 @@ export const operationHistoryColumnsShort = [
   },
   {
     title: "Статус",
-    dataIndex: "status",
+    dataIndex: "operationStatus",
     width: 200,
   },
   {
@@ -145,7 +145,7 @@ export const operationHistoryColumns = [
   },
   {
     title: "Статус",
-    dataIndex: "status",
+    dataIndex: "operationStatus",
     width: 200,
   },
   {

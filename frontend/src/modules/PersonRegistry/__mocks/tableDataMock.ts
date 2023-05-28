@@ -2,7 +2,6 @@ export const tableDataMock = [
   {
     id: "ФЛ123011",
     personStatus: "Новая",
-    creditHistoryResult: true,
     lastName: "Сон",
     firstName: "Кирилл",
     patrName: "Романович",
@@ -11,7 +10,6 @@ export const tableDataMock = [
   {
     id: "ФЛ123010",
     personStatus: "Новая",
-    creditHistoryResult: false,
     lastName: "Акула",
     firstName: "Артем",
     patrName: "Артёмович",
@@ -20,7 +18,6 @@ export const tableDataMock = [
   {
     id: "ФЛ123009",
     personStatus: "Новая",
-    creditHistoryResult: true,
     lastName: "Горемыкина",
     firstName: "Юлия",
     patrName: "Кирилловна",
@@ -29,7 +26,6 @@ export const tableDataMock = [
   {
     id: "ФЛ123008",
     personStatus: "Новая",
-    creditHistoryResult: true,
     lastName: "Чач",
     firstName: "Артур",
     patrName: "Бибович",
@@ -38,7 +34,6 @@ export const tableDataMock = [
   {
     id: "ФЛ123007",
     personStatus: "В работе",
-    creditHistoryResult: true,
     lastName: "Пономарёва",
     firstName: "Мария",
     patrName: "Алексеевна",

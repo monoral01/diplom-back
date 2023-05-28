@@ -63,24 +63,29 @@
                     />
                   </a-form-item>
                 </a-col>
+                <a-col span="8">
+                  <a-form-item label="Статус" name="companyStatus">
+                    <a-input
+                      v-model:value="formState.companyStatus"
+                      :disabled="false"
+                    />
+                  </a-form-item>
+                </a-col>
               </a-row>
             </a-col>
             <a-col span="24">
               <div class="buttons-wrapper__left">
-                <a-button type="default">
+                <a-button type="default" @click="search">
                   <template #icon><SearchOutlined /></template>Поиск
                 </a-button>
-                <a-button type="default">
+                <a-button type="default" @click="reset">
                   <template #icon><StopOutlined /></template> Очистить фильтры
                 </a-button>
-                <a-button type="default">
-                  <template #icon><FileExcelOutlined /></template> Экспорт в ODS
-                </a-button>
-                <a-button type="default">
+                <a-button type="default" @click="openCard">
                   <template #icon><FormOutlined /></template
                   >Редактировать</a-button
                 >
-                <a-button type="default">
+                <a-button type="default" @click="deleteCard">
                   <template #icon><DeleteOutlined /></template>Удалить
                 </a-button>
               </div>
@@ -89,9 +94,9 @@
               <b-table
                 :pagination="true"
                 :columns="registryColumns"
-                :total="40"
+                :total="dataSource.length"
                 :loading="loadingTable"
-                :data-source="tableDataMock"
+                :data-source="dataSource"
                 :page-size="currentPageSize"
                 :pageSizeOptions="['20', '50', '100']"
                 :current="currentPage"
@@ -100,8 +105,6 @@
                 :row-change="true"
                 @selectedRowChange="selectedRowChange"
                 @paginationChange="paginationChange"
-                @sortChange="sortChange"
-                @updateColumns="updateColumns"
               />
             </a-col>
           </a-row>
@@ -146,10 +149,16 @@ import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
 import {
   SearchOutlined,
   DeleteOutlined,
-  FileExcelOutlined,
   StopOutlined,
   FormOutlined,
 } from "@ant-design/icons-vue";
+import {
+  deleteCompany,
+  getCompanyRegistry,
+} from "@/service/companyRegistryService";
+import { useTable } from "@/helpers/useTable";
+import router from "@/router";
+import { errorNotification, infoNotification } from "@/helpers/notification";
 export default defineComponent({
   name: "PersonRegistry",
   components: {
@@ -157,19 +166,64 @@ export default defineComponent({
     PageWrapper,
     SearchOutlined,
     DeleteOutlined,
-    FileExcelOutlined,
     StopOutlined,
     FormOutlined,
   },
   setup() {
-    const loadingTable = ref(true);
     const formState = ref({
-      lastName: undefined,
-      firstName: undefined,
-      patrName: undefined,
+      id: undefined,
+      companyRegistrationDate: undefined,
+      companyName: undefined,
+      companyINN: undefined,
+      companyNumber: undefined,
       dateStart: undefined,
+      companyStatus: undefined,
     });
-    onMounted(() => {
+    const {
+      dataSource,
+      total,
+      currentFilters,
+      currentPageSize,
+      currentPage,
+      loadingTable,
+      selectedRowKey,
+      selectedRow,
+      paginationChange,
+      selectedRowChange,
+    } = useTable(getCompanyRegistry);
+    const reset = () => {
+      formState.value.id = undefined;
+      formState.value.companyRegistrationDate = undefined;
+      formState.value.companyName = undefined;
+      formState.value.companyINN = undefined;
+      formState.value.companyNumber = undefined;
+      formState.value.dateStart = undefined;
+      formState.value.companyStatus = undefined;
+    };
+    const search = async () => {
+      dataSource.value = await getCompanyRegistry({
+        page: currentPage.value,
+        pageSize: currentPageSize.value,
+        filters: formState.value,
+      });
+    };
+    const openCard = () => {
+      router.push(`/personRegistry/card/edit/${selectedRowKey.value}/mainInfo`);
+    };
+    const deleteCard = async () => {
+      try {
+        await deleteCompany(selectedRowKey.value);
+        infoNotification("Запись удалена");
+      } catch (err) {
+        errorNotification("При удалении произошла ошибка");
+      }
+    };
+    onMounted(async () => {
+      dataSource.value = await getCompanyRegistry({
+        page: 1,
+        pageSize: 5,
+        filters: formState.value,
+      });
       setTimeout(() => {
         loadingTable.value = false;
       }, 1600);
@@ -181,6 +235,19 @@ export default defineComponent({
       tableDataMock,
       formState,
       loadingTable,
+      dataSource,
+      total,
+      currentFilters,
+      currentPageSize,
+      currentPage,
+      selectedRowKey,
+      selectedRow,
+      paginationChange,
+      selectedRowChange,
+      reset,
+      search,
+      openCard,
+      deleteCard,
     };
   },
 });

@@ -224,7 +224,7 @@ app
     }
   })
   // получение физ.лица по id
-  .get("/api/company/:id", async (req, res) => {
+  .get("/api/person/:id", async (req, res) => {
     const { id } = req.params;
     try {
       const person = await personService.getPersonByID(+id);
@@ -236,7 +236,7 @@ app
     }
   })
   // удаление физ.лица по id
-  .delete("/api/company/:id", async (req, res) => {
+  .delete("/api/person/:id", async (req, res) => {
     const { id } = req.params;
     try {
       const person = await personService.deletePerson(+id);

@@ -11,7 +11,6 @@ export const initialCardState: CompanyCardState = {
   // companyName: undefined,
   // companyNumber: undefined,
   // companyINN: undefined,
-  // creditHistoryResult: undefined
   // companyDirectorName: undefined,
   // companyAddress: undefined,
   // companyRegistrationDate: undefined,
@@ -25,7 +24,6 @@ export const initialCardState: CompanyCardState = {
   companyName: "ООО Рога и Копыта",
   companyNumber: 12983091823908,
   companyINN: 112121219,
-  creditHistoryResult: true,
   companyDirectorName: "Чеч К.К.",
   companyAddress: "г Псков, ул Советская д 30",
   companyRegistrationDate: dayjs("1.01.1970"),

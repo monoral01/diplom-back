@@ -81,8 +81,14 @@
                               </a-form-item>
                             </a-col>
                             <a-col span="8">
-                              <a-form-item name="status" label="Статус счёта">
-                                <a-input v-model:value="item.status" disabled />
+                              <a-form-item
+                                name="accountStatus"
+                                label="Статус счёта"
+                              >
+                                <a-input
+                                  v-model:value="item.accountStatus"
+                                  disabled
+                                />
                               </a-form-item>
                             </a-col>
                             <a-col span="8">
