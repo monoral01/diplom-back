@@ -1,6 +1,6 @@
 export const tableDataMock = [
   {
-    id: "ФЛ123011",
+    id: "5",
     personStatus: "Новая",
     lastName: "Сон",
     firstName: "Кирилл",
@@ -8,7 +8,7 @@ export const tableDataMock = [
     createDate: "2023-05-15",
   },
   {
-    id: "ФЛ123010",
+    id: "4",
     personStatus: "Новая",
     lastName: "Акула",
     firstName: "Артем",
@@ -16,7 +16,7 @@ export const tableDataMock = [
     createDate: "2023-05-15",
   },
   {
-    id: "ФЛ123009",
+    id: "3",
     personStatus: "Новая",
     lastName: "Горемыкина",
     firstName: "Юлия",
@@ -24,7 +24,7 @@ export const tableDataMock = [
     createDate: "2023-05-14",
   },
   {
-    id: "ФЛ123008",
+    id: "2",
     personStatus: "Новая",
     lastName: "Чач",
     firstName: "Артур",
@@ -32,7 +32,7 @@ export const tableDataMock = [
     createDate: "2023-05-13",
   },
   {
-    id: "ФЛ123007",
+    id: "1",
     personStatus: "В работе",
     lastName: "Пономарёва",
     firstName: "Мария",

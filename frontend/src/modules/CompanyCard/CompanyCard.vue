@@ -17,7 +17,7 @@
           ref="formRef"
           :model="companyCardState"
           layout="vertical"
-          :rules="{}"
+          :rules="rules"
           :validateOnRuleChange="true"
         >
           <a-row>
@@ -79,9 +79,9 @@
                         </a-form-item>
                       </a-col>
                       <a-col span="6">
-                        <a-form-item name="companyINN" label="ИНН/КПП">
+                        <a-form-item name="companyInn" label="ИНН/КПП">
                           <a-input
-                            v-model:value="companyCardState.companyINN"
+                            v-model:value="companyCardState.companyInn"
                             :disabled="disabled"
                           />
                         </a-form-item>
@@ -178,6 +178,12 @@ import CardHistory from "../common/CardHistory.vue";
 import { cardOptionsMap, CardMode } from "@/models/Common";
 import BSelect from "@/components/BSelect.vue";
 import router from "@/router";
+import {
+  getCompany,
+  postCompany,
+  updateCompany,
+} from "@/service/companyRegistryService";
+import { errorNotification } from "@/helpers/notification";
 
 export default defineComponent({
   name: "CompanyCard",
@@ -189,21 +195,44 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const cardMode = computed(() => route.params.mode as string);
+    const cardId = computed(() => route.params.id as string);
     const companyCardState = reactive<CompanyCardState>(initialCardState);
-    const disabled = computed(() => cardOptionsMap[cardMode.value].disabled);
     const currentTab = ref("/mainInfo");
+    const disabled = computed(() => cardOptionsMap[cardMode.value].disabled);
     const header = computed(() => cardOptionsMap[cardMode.value].header);
-    onMounted(() => {
-      switch (cardMode.value) {
-        case CardMode.ADD:
-          Object.assign(companyCardState, initialCardState);
-          break;
-        case CardMode.EDIT:
-          break;
-        case CardMode.VIEW:
-          break;
+    onMounted(async () => {
+      if (
+        cardMode.value === CardMode.EDIT ||
+        cardMode.value === CardMode.VIEW
+      ) {
+        const newState = await getCompany(cardId.value);
+        Object.assign(companyCardState, newState);
       }
     });
+    const formRef = ref();
+    const rules = {
+      lastName: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      firstName: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      passportSerialNumber: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      passportNumber: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      issuedBy: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      addressOfResidence: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      birthDate: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+    };
     const saveRequisites = () => {
       console.log("save");
     };
@@ -224,6 +253,29 @@ export default defineComponent({
       router.push(newLink);
       currentTab.value = tab;
     };
+    const submit = async () => {
+      formRef.value
+        .validate()
+        .then(async () => {
+          if (companyCardState.id) {
+            try {
+              await updateCompany(companyCardState, companyCardState.id);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+          } else {
+            let id;
+            try {
+              id = await postCompany(companyCardState);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+            const newState = await getCompany(id);
+            Object.assign(companyCardState, newState);
+          }
+        })
+        .catch(() => errorNotification("Заполните обязательные поля"));
+    };
     return {
       cardOptionsMap,
       header,
@@ -238,6 +290,8 @@ export default defineComponent({
       onRemoveHistoryManually,
       handleTabChange,
       currentTab,
+      submit,
+      rules,
     };
   },
 });

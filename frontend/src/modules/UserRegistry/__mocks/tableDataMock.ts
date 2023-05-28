@@ -1,6 +1,6 @@
 export const tableDataMock = [
   {
-    id: "5",
+    id: "ЮЛ1000019",
     companyStatus: "Новая",
     companyName: "ООО Рога и Копыта",
     companyInn: "812381231",
@@ -10,7 +10,7 @@ export const tableDataMock = [
     createDate: "2023-05-15",
   },
   {
-    id: "4",
+    id: "ЮЛ1000018",
     companyStatus: "Новая",
     companyName: "ИП Горемыкина Юлия Кирилловна",
     companyInn: "123123132",
@@ -20,7 +20,7 @@ export const tableDataMock = [
     createDate: "2023-05-13",
   },
   {
-    id: "3",
+    id: "ЮЛ1000017",
     companyStatus: "Новая",
     companyName: "ООО Минами",
     companyInn: "3453787878",
@@ -30,7 +30,7 @@ export const tableDataMock = [
     createDate: "2023-05-12",
   },
   {
-    id: "2",
+    id: "ЮЛ1000016",
     companyStatus: "Новая",
     companyName: "ПАО Сбербанк",
     companyInn: "7707083893",
@@ -40,7 +40,7 @@ export const tableDataMock = [
     createDate: "2023-05-10",
   },
   {
-    id: "1",
+    id: "ЮЛ1000015",
     companyStatus: "Новая",
     companyName: "ИП Чач Артур Бибович",
     companyInn: "1241241411",

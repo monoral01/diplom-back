@@ -2,7 +2,7 @@
   <PageWrapper>
     <template #subheader>
       <div class="buttons-wrapper__right card__buttons">
-        <a-button type="primary" ghost>Сохранить</a-button>
+        <a-button type="primary" ghost @click="submit">Сохранить</a-button>
         <a-button type="primary">закрыть</a-button>
         <a-button type="primary">удалить</a-button>
       </div>
@@ -240,12 +240,11 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { initialAddInfoState, initialCardState } from "../consts";
+import { initialAddInfoState } from "../consts";
 import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
 import PageWrapper from "@/components/PageWrapper.vue";
 import BCollapse from "@/components/BCollapse.vue";
 import { cardOptionsMap, CardMode } from "@/models/Common";
-import BSelect from "@/components/BSelect.vue";
 import router from "@/router";
 import { AdditionalInfoState } from "@/models/AdditionalInfoEntity";
 import OperationHistory from "@/modules/common/OperationHistory.vue";
@@ -254,6 +253,12 @@ import {
   operationHistoryColumnsShort,
 } from "@/modules/common/consts";
 import dayjs from "dayjs";
+import { errorNotification } from "@/helpers/notification";
+import {
+  updateCompany,
+  postCompany,
+  getCompany,
+} from "@/service/companyRegistryService";
 export default defineComponent({
   name: "PersonCardAdditionalInfo",
   components: {
@@ -264,14 +269,16 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const cardMode = computed(() => route.params.mode as string);
+    const cardId = computed(() => route.params.id as string);
     const addInfoState = reactive<AdditionalInfoState>(initialAddInfoState);
     const currentTab = ref("/mainInfo");
+    const formRef = ref();
     const disabled = computed(() => cardOptionsMap[cardMode.value].disabled);
     const header = computed(() => cardOptionsMap[cardMode.value].header);
     onMounted(() => {
       switch (cardMode.value) {
         case CardMode.ADD:
-          Object.assign(addInfoState, initialCardState);
+          Object.assign(addInfoState, initialAddInfoState);
           break;
         case CardMode.EDIT:
           break;
@@ -287,6 +294,29 @@ export default defineComponent({
     });
     const saveRequisites = () => {
       console.log("save");
+    };
+    const submit = async () => {
+      formRef.value
+        .validate()
+        .then(async () => {
+          if (cardId.value) {
+            try {
+              await updateCompany(addInfoState, cardId.value);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+          } else {
+            let id;
+            try {
+              id = await postCompany(addInfoState);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+            const { accounts, operations } = await getCompany(id);
+            Object.assign(addInfoState, { accounts, operations });
+          }
+        })
+        .catch(() => errorNotification("Заполните обязательные поля"));
     };
     const handleTabChange = (tab: string) => {
       const newLink = `${route.path.split("/").slice(0, -1).join("/")}${tab}`;
@@ -306,6 +336,8 @@ export default defineComponent({
       handleTabChange,
       operationColumns,
       dayjs,
+      formRef,
+      submit,
     };
   },
 });

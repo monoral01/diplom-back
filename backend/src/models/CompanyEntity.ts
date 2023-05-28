@@ -9,7 +9,7 @@ export type CompanyCardState = {
   companyStatus?: CardStatus;
   companyName?: string;
   companyNumber?: number;
-  companyINN?: number;
+  companyInn?: number;
   companyDirectorName?: string;
   companyCountry?: { label: string; value: string };
   companyAddress?: string;

@@ -2,6 +2,8 @@ import { Dayjs } from "dayjs";
 import { CardHistoryState } from "./CardHistoryEntity";
 import { CardStatus } from "./Common";
 import { FileItem } from "./File";
+import { OperationState } from "./OperationEntity";
+import { AccountState } from "./AdditionalInfoEntity";
 
 export type CompanyCardState = {
   id?: string;
@@ -10,7 +12,7 @@ export type CompanyCardState = {
   companyStatus?: CardStatus;
   companyName?: string;
   companyNumber?: number;
-  companyINN?: number;
+  companyInn?: number;
   companyDirectorName?: string;
   companyCountry?: { label: string; value: string };
   companyAddress?: string;
@@ -18,5 +20,6 @@ export type CompanyCardState = {
   postAddress?: string;
   lawAddress?: string;
   history: CardHistoryState[];
-  files: FileItem[];
+  operations: OperationState[];
+  accounts: AccountState[];
 };

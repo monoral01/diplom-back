@@ -2,7 +2,7 @@
   <PageWrapper>
     <template #subheader>
       <div class="buttons-wrapper__right card__buttons">
-        <a-button type="primary" ghost>Сохранить</a-button>
+        <a-button type="primary" ghost @click="submit">Сохранить</a-button>
         <a-button type="primary">закрыть</a-button>
         <a-button type="primary">удалить</a-button>
       </div>
@@ -60,172 +60,184 @@
                       <a-col span="24">
                         <h4>Сведения о счетах клиента</h4>
                       </a-col>
-                      <a-col
-                        span="24"
-                        v-for="item in addInfoState.accounts"
-                        :key="item.requisitesCheckingAccount"
-                      >
-                        <b-collapse
-                          :header="`Счёт №${item.requisitesCheckingAccount}`"
+                      <template v-if="addInfoState.accounts.length">
+                        <a-col
+                          span="24"
+                          v-for="item in addInfoState.accounts"
+                          :key="item.requisitesCheckingAccount"
                         >
-                          <a-row :gutter="GRID_BASE_SPACING">
-                            <a-col span="8">
-                              <a-form-item
-                                name="timeCreate"
-                                label="Время создания"
-                              >
-                                <a-input
-                                  v-model:value="item.timeCreate"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="8">
-                              <a-form-item
-                                name="accountStatus"
-                                label="Статус счёта"
-                              >
-                                <a-input
-                                  v-model:value="item.accountStatus"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="8">
-                              <a-form-item name="type" label="Тип счёта">
-                                <a-input v-model:value="item.type" disabled />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="holder"
-                                label="Держатель счёта"
-                              >
-                                <a-input v-model:value="item.holder" disabled />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="phoneNumber"
-                                label="Номер телефона"
-                              >
-                                <a-input
-                                  v-model:value="item.phoneNumber"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="sum"
-                                label="Сумма средств на счёте"
-                              >
-                                <a-input v-model:value="item.sum" disabled />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="debt"
-                                :label="`Долг на ${dayjs().format(
-                                  'DD.MM.YYYY HH:mm'
-                                )}`"
-                              >
-                                <a-input v-model:value="item.debt" disabled />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="percent"
-                                label="Процентная ставка"
-                              >
-                                <a-input
-                                  v-model:value="item.percent"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="debtDeadline"
-                                label="Крайний срок платежа"
-                              >
-                                <a-input
-                                  v-model:value="item.debtDeadline"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="requisitesCheckingAccount"
-                                label="Расчётный счёт"
-                              >
-                                <a-input
-                                  v-model:value="item.requisitesCheckingAccount"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="requisitesBankName"
-                                label="Название банка"
-                              >
-                                <a-input
-                                  v-model:value="item.requisitesBankName"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item name="requisitesBIK" label="БИК">
-                                <a-input
-                                  v-model:value="item.requisitesBIK"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item name="requisitesKPP" label="КПП">
-                                <a-input
-                                  v-model:value="item.requisitesKPP"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="requisitesKorrAccount"
-                                label="Корр.счёт"
-                              >
-                                <a-input
-                                  v-model:value="item.requisitesKorrAccount"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="12">
-                              <a-form-item
-                                name="requisitesCardNumber"
-                                label="№ карты"
-                              >
-                                <a-input
-                                  v-model:value="item.requisitesCardNumber"
-                                  disabled
-                                />
-                              </a-form-item>
-                            </a-col>
-                            <a-col span="24">
-                              <a-button
-                                type="primary"
-                                ghost
-                                @click="saveRequisites"
-                                >Скачать в pdf</a-button
-                              >
-                            </a-col>
-                          </a-row>
-                        </b-collapse>
-                      </a-col>
+                          <b-collapse
+                            :header="`Счёт №${item.requisitesCheckingAccount}`"
+                          >
+                            <a-row :gutter="GRID_BASE_SPACING">
+                              <a-col span="8">
+                                <a-form-item
+                                  name="timeCreate"
+                                  label="Время создания"
+                                >
+                                  <a-input
+                                    v-model:value="item.timeCreate"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="8">
+                                <a-form-item
+                                  name="accountStatus"
+                                  label="Статус счёта"
+                                >
+                                  <a-input
+                                    v-model:value="item.accountStatus"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="8">
+                                <a-form-item name="type" label="Тип счёта">
+                                  <a-input v-model:value="item.type" disabled />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="holder"
+                                  label="Держатель счёта"
+                                >
+                                  <a-input
+                                    v-model:value="item.holder"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="phoneNumber"
+                                  label="Номер телефона"
+                                >
+                                  <a-input
+                                    v-model:value="item.phoneNumber"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="sum"
+                                  label="Сумма средств на счёте"
+                                >
+                                  <a-input v-model:value="item.sum" disabled />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="debt"
+                                  :label="`Долг на ${dayjs().format(
+                                    'DD.MM.YYYY HH:mm'
+                                  )}`"
+                                >
+                                  <a-input v-model:value="item.debt" disabled />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="percent"
+                                  label="Процентная ставка"
+                                >
+                                  <a-input
+                                    v-model:value="item.percent"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="debtDeadline"
+                                  label="Крайний срок платежа"
+                                >
+                                  <a-input
+                                    v-model:value="item.debtDeadline"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="requisitesCheckingAccount"
+                                  label="Расчётный счёт"
+                                >
+                                  <a-input
+                                    v-model:value="
+                                      item.requisitesCheckingAccount
+                                    "
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="requisitesBankName"
+                                  label="Название банка"
+                                >
+                                  <a-input
+                                    v-model:value="item.requisitesBankName"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item name="requisitesBIK" label="БИК">
+                                  <a-input
+                                    v-model:value="item.requisitesBIK"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item name="requisitesKPP" label="КПП">
+                                  <a-input
+                                    v-model:value="item.requisitesKPP"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="requisitesKorrAccount"
+                                  label="Корр.счёт"
+                                >
+                                  <a-input
+                                    v-model:value="item.requisitesKorrAccount"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="12">
+                                <a-form-item
+                                  name="requisitesCardNumber"
+                                  label="№ карты"
+                                >
+                                  <a-input
+                                    v-model:value="item.requisitesCardNumber"
+                                    disabled
+                                  />
+                                </a-form-item>
+                              </a-col>
+                              <a-col span="24">
+                                <a-button
+                                  type="primary"
+                                  ghost
+                                  @click="saveRequisites"
+                                  >Скачать в pdf</a-button
+                                >
+                              </a-col>
+                            </a-row>
+                          </b-collapse>
+                        </a-col>
+                      </template>
+                      <template v-else>
+                        <a-col span="24">
+                          <h3>Нет сведений о счетах</h3>
+                        </a-col>
+                      </template>
                     </a-row>
                   </a-col>
                 </a-row>
@@ -240,12 +252,11 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { initialAddInfoState, initialCardState } from "../consts";
+import { initialAddInfoState } from "../consts";
 import { GRID_BASE_SPACING, GRID_BIG_SPACING } from "@/common/consts";
 import PageWrapper from "@/components/PageWrapper.vue";
 import BCollapse from "@/components/BCollapse.vue";
 import { cardOptionsMap, CardMode } from "@/models/Common";
-import BSelect from "@/components/BSelect.vue";
 import router from "@/router";
 import { AdditionalInfoState } from "@/models/AdditionalInfoEntity";
 import OperationHistory from "@/modules/common/OperationHistory.vue";
@@ -254,6 +265,12 @@ import {
   operationHistoryColumnsShort,
 } from "@/modules/common/consts";
 import dayjs from "dayjs";
+import { errorNotification } from "@/helpers/notification";
+import {
+  updateCompany,
+  postCompany,
+  getCompany,
+} from "@/service/companyRegistryService";
 export default defineComponent({
   name: "PersonCardAdditionalInfo",
   components: {
@@ -264,14 +281,16 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const cardMode = computed(() => route.params.mode as string);
+    const cardId = computed(() => route.params.id as string);
     const addInfoState = reactive<AdditionalInfoState>(initialAddInfoState);
     const currentTab = ref("/mainInfo");
+    const formRef = ref();
     const disabled = computed(() => cardOptionsMap[cardMode.value].disabled);
     const header = computed(() => cardOptionsMap[cardMode.value].header);
     onMounted(() => {
       switch (cardMode.value) {
         case CardMode.ADD:
-          Object.assign(addInfoState, initialCardState);
+          Object.assign(addInfoState, initialAddInfoState);
           break;
         case CardMode.EDIT:
           break;
@@ -287,6 +306,29 @@ export default defineComponent({
     });
     const saveRequisites = () => {
       console.log("save");
+    };
+    const submit = async () => {
+      formRef.value
+        .validate()
+        .then(async () => {
+          if (cardId.value) {
+            try {
+              await updateCompany(addInfoState, cardId.value);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+          } else {
+            let id;
+            try {
+              id = await postCompany(addInfoState);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+            const { accounts, operations } = await getCompany(id);
+            Object.assign(addInfoState, { accounts, operations });
+          }
+        })
+        .catch(() => errorNotification("Заполните обязательные поля"));
     };
     const handleTabChange = (tab: string) => {
       const newLink = `${route.path.split("/").slice(0, -1).join("/")}${tab}`;
@@ -306,6 +348,8 @@ export default defineComponent({
       handleTabChange,
       operationColumns,
       dayjs,
+      formRef,
+      submit,
     };
   },
 });

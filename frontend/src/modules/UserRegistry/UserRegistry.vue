@@ -1,6 +1,6 @@
 <template>
   <PageWrapper>
-    <template #title> Реестр юридических лиц</template>
+    <template #title> Реестр пользователей</template>
     <template #body>
       <div class="registry__body">
         <a-form ref="formRef" layout="vertical" :hideRequiredMark="true">
@@ -19,7 +19,7 @@
                 <a-col span="8">
                   <a-form-item label="Дата создания карточки" name="date">
                     <a-range-picker
-                      v-model:value="formState.dateStart"
+                      v-model:value="formState.createDate"
                       format="DD.MM.YYYY"
                       :allowEmpty="[true, true]"
                       :disabled="false"
@@ -27,48 +27,8 @@
                   </a-form-item>
                 </a-col>
                 <a-col span="8">
-                  <a-form-item
-                    label="Дата регистрации компании"
-                    name="companyRegistrationDate"
-                  >
-                    <a-range-picker
-                      v-model:value="formState.companyRegistrationDate"
-                      format="DD.MM.YYYY"
-                      :allowEmpty="[true, true]"
-                      :disabled="false"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col span="8">
-                  <a-form-item label="Название" name="companyName">
-                    <a-input
-                      v-model:value="formState.companyName"
-                      :disabled="false"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col span="8">
-                  <a-form-item label="ИНН" name="companyInn">
-                    <a-input
-                      v-model:value="formState.companyInn"
-                      :disabled="false"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col span="8">
-                  <a-form-item label="ОГРНИП" name="companyNumber">
-                    <a-input
-                      v-model:value="formState.companyNumber"
-                      :disabled="false"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col span="8">
-                  <a-form-item label="Статус" name="companyStatus">
-                    <a-input
-                      v-model:value="formState.companyStatus"
-                      :disabled="false"
-                    />
+                  <a-form-item label="ФИО" name="fio">
+                    <a-input v-model:value="formState.fio" :disabled="false" />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -152,15 +112,12 @@ import {
   StopOutlined,
   FormOutlined,
 } from "@ant-design/icons-vue";
-import {
-  deleteCompany,
-  getCompanyRegistry,
-} from "@/service/companyRegistryService";
 import { useTable } from "@/helpers/useTable";
 import router from "@/router";
 import { errorNotification, infoNotification } from "@/helpers/notification";
+import { deleteUser, getUserRegistry } from "@/service/userRegistryService";
 export default defineComponent({
-  name: "PersonRegistry",
+  name: "UserRegistry",
   components: {
     BTable,
     PageWrapper,
@@ -172,12 +129,8 @@ export default defineComponent({
   setup() {
     const formState = ref({
       id: undefined,
-      companyRegistrationDate: undefined,
-      companyName: undefined,
-      companyInn: undefined,
-      companyNumber: undefined,
-      dateStart: undefined,
-      companyStatus: undefined,
+      fio: undefined,
+      createDate: undefined,
     });
     const {
       dataSource,
@@ -190,36 +143,34 @@ export default defineComponent({
       selectedRow,
       paginationChange,
       selectedRowChange,
-    } = useTable(getCompanyRegistry);
+    } = useTable(getUserRegistry);
     const reset = () => {
       formState.value.id = undefined;
-      formState.value.companyRegistrationDate = undefined;
-      formState.value.companyName = undefined;
-      formState.value.companyInn = undefined;
-      formState.value.companyNumber = undefined;
-      formState.value.dateStart = undefined;
-      formState.value.companyStatus = undefined;
+      formState.value.fio = undefined;
+      formState.value.createDate = undefined;
     };
     const search = async () => {
-      dataSource.value = await getCompanyRegistry({
+      dataSource.value = await getUserRegistry({
         page: currentPage.value,
         pageSize: currentPageSize.value,
         filters: formState.value,
       });
     };
     const openCard = () => {
-      router.push(`/personRegistry/card/edit/${selectedRowKey.value}/mainInfo`);
+      router.push(`/userRegistry/card/edit/${selectedRowKey.value}/mainInfo`);
     };
     const deleteCard = async () => {
       try {
-        await deleteCompany(selectedRowKey.value);
+        await deleteUser(selectedRowKey.value);
         infoNotification("Запись удалена");
       } catch (err) {
         errorNotification("При удалении произошла ошибка");
+      } finally {
+        await search();
       }
     };
     onMounted(async () => {
-      dataSource.value = await getCompanyRegistry({
+      dataSource.value = await getUserRegistry({
         page: 1,
         pageSize: 5,
         filters: formState.value,

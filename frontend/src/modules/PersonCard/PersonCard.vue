@@ -2,7 +2,7 @@
   <PageWrapper>
     <template #subheader>
       <div class="buttons-wrapper__right card__buttons">
-        <a-button type="primary" ghost>Сохранить</a-button>
+        <a-button type="primary" ghost @click="submit">Сохранить</a-button>
         <a-button type="primary">закрыть</a-button>
         <a-button type="primary" :disabled="!personCardState.personStatus"
           >удалить</a-button
@@ -17,7 +17,7 @@
           ref="formRef"
           :model="personCardState"
           layout="vertical"
-          :rules="{}"
+          :rules="rules"
           :validateOnRuleChange="true"
         >
           <a-row>
@@ -38,7 +38,7 @@
                       class="margined-card-body"
                     >
                       <a-col span="8">
-                        <img src="@/assets/male2.jpg" />
+                        <!-- <img src="@/assets/male2.jpg" /> -->
                       </a-col>
                       <a-col span="16">
                         <a-row :gutter="GRID_BASE_SPACING">
@@ -165,98 +165,88 @@
                       <a-col span="24">
                         <h3>Сведения о компании</h3>
                       </a-col>
-                      <template v-if="personCardState.companyName">
-                        <a-col span="12">
-                          <a-form-item
-                            name="companyName"
-                            label="Название компании"
-                          >
-                            <a-input
-                              v-model:value="personCardState.companyName"
-                              :disabled="disabled"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="6">
-                          <a-form-item name="companyName" label="ОГРН/ОГРНИП">
-                            <a-input
-                              v-model:value="personCardState.companyNumber"
-                              :disabled="disabled"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="6">
-                          <a-form-item name="companyINN" label="ИНН/КПП">
-                            <a-input
-                              v-model:value="personCardState.companyINN"
-                              :disabled="disabled"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="6">
-                          <a-form-item
-                            label="Дата регистрации"
-                            name="companyRegistrationDate"
-                          >
-                            <a-date-picker
-                              v-model:value="
-                                personCardState.companyRegistrationDate
-                              "
-                              format="DD.MM.YYYY"
-                              :disabled="false"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="6">
-                          <a-form-item
-                            name="companyDirectorName"
-                            label="ФИО руководителя"
-                          >
-                            <a-input
-                              v-model:value="
-                                personCardState.companyDirectorName
-                              "
-                              :disabled="disabled"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="12">
-                          <a-form-item
-                            name="companyCountry"
-                            label="Страна регистрации"
-                          >
-                            <b-select
-                              v-model:value="personCardState.companyCountry"
-                              :disabled="disabled"
-                              :loadOptions="() => [{ label: 'РФ', value: '1' }]"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="12">
-                          <a-form-item
-                            name="postAddress"
-                            label="Почтовый адрес"
-                          >
-                            <a-input
-                              v-model:value="personCardState.postAddress"
-                              :disabled="disabled"
-                            />
-                          </a-form-item>
-                        </a-col>
-                        <a-col span="12">
-                          <a-form-item
-                            name="lawAddress"
-                            label="Юридический адрес"
-                          >
-                            <a-input
-                              v-model:value="personCardState.lawAddress"
-                              :disabled="disabled"
-                            />
-                          </a-form-item>
-                        </a-col>
-                      </template>
-                      <a-col span="24" v-else>
-                        <h4>Нет сведений о компании</h4>
+                      <a-col span="12">
+                        <a-form-item
+                          name="companyName"
+                          label="Название компании"
+                        >
+                          <a-input
+                            v-model:value="personCardState.companyName"
+                            :disabled="disabled"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="6">
+                        <a-form-item name="companyName" label="ОГРН/ОГРНИП">
+                          <a-input
+                            v-model:value="personCardState.companyNumber"
+                            :disabled="disabled"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="6">
+                        <a-form-item name="companyInn" label="ИНН/КПП">
+                          <a-input
+                            v-model:value="personCardState.companyInn"
+                            :disabled="disabled"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="6">
+                        <a-form-item
+                          label="Дата регистрации"
+                          name="companyRegistrationDate"
+                        >
+                          <a-date-picker
+                            v-model:value="
+                              personCardState.companyRegistrationDate
+                            "
+                            format="DD.MM.YYYY"
+                            :disabled="false"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="6">
+                        <a-form-item
+                          name="companyDirectorName"
+                          label="ФИО руководителя"
+                        >
+                          <a-input
+                            v-model:value="personCardState.companyDirectorName"
+                            :disabled="disabled"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="12">
+                        <a-form-item
+                          name="companyCountry"
+                          label="Страна регистрации"
+                        >
+                          <b-select
+                            v-model:value="personCardState.companyCountry"
+                            :disabled="disabled"
+                            :loadOptions="() => [{ label: 'РФ', value: '1' }]"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="12">
+                        <a-form-item name="postAddress" label="Почтовый адрес">
+                          <a-input
+                            v-model:value="personCardState.postAddress"
+                            :disabled="disabled"
+                          />
+                        </a-form-item>
+                      </a-col>
+                      <a-col span="12">
+                        <a-form-item
+                          name="lawAddress"
+                          label="Юридический адрес"
+                        >
+                          <a-input
+                            v-model:value="personCardState.lawAddress"
+                            :disabled="disabled"
+                          />
+                        </a-form-item>
                       </a-col>
                     </a-row>
                   </a-col>
@@ -294,6 +284,12 @@ import { CardHistoryState } from "@/models/CardHistoryEntity";
 import { cardOptionsMap, CardMode } from "@/models/Common";
 import BSelect from "@/components/BSelect.vue";
 import router from "@/router";
+import { errorNotification } from "@/helpers/notification";
+import {
+  getPerson,
+  postPerson,
+  updatePerson,
+} from "@/service/personRegistryService";
 
 export default defineComponent({
   name: "PersonCard",
@@ -305,21 +301,44 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const cardMode = computed(() => route.params.mode as string);
+    const cardId = computed(() => route.params.id as string);
     const personCardState = reactive<PersonCardState>(initialCardState);
     const currentTab = ref("/mainInfo");
     const disabled = computed(() => cardOptionsMap[cardMode.value].disabled);
     const header = computed(() => cardOptionsMap[cardMode.value].header);
-    onMounted(() => {
-      switch (cardMode.value) {
-        case CardMode.ADD:
-          Object.assign(personCardState, initialCardState);
-          break;
-        case CardMode.EDIT:
-          break;
-        case CardMode.VIEW:
-          break;
+    onMounted(async () => {
+      if (
+        cardMode.value === CardMode.EDIT ||
+        cardMode.value === CardMode.VIEW
+      ) {
+        const newState = await getPerson(cardId.value);
+        Object.assign(personCardState, newState);
       }
     });
+    const formRef = ref();
+    const rules = {
+      lastName: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      firstName: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      passportSerialNumber: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      passportNumber: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      issuedBy: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      addressOfResidence: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+      birthDate: [
+        { required: true, message: "Поле обязательно для заполнения" },
+      ],
+    };
     const saveRequisites = () => {
       console.log("save");
     };
@@ -340,8 +359,33 @@ export default defineComponent({
       router.push(newLink);
       currentTab.value = tab;
     };
+    const submit = async () => {
+      formRef.value
+        .validate()
+        .then(async () => {
+          if (personCardState.id) {
+            try {
+              await updatePerson(personCardState, personCardState.id);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+          } else {
+            let id;
+            try {
+              id = await postPerson(personCardState);
+            } catch {
+              errorNotification("При сохранении карточки произошла ошибка");
+            }
+            const newState = await getPerson(id);
+            Object.assign(personCardState, newState);
+          }
+        })
+        .catch(() => errorNotification("Заполните обязательные поля"));
+    };
     return {
       cardOptionsMap,
+      rules,
+      formRef,
       header,
       cardMode,
       personCardState,
@@ -353,6 +397,7 @@ export default defineComponent({
       onRemoveHistoryManually,
       currentTab,
       handleTabChange,
+      submit,
     };
   },
 });

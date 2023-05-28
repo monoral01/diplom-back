@@ -42,17 +42,42 @@ const startApp = async () => {
 startApp();
 
 app
+  // получение реестра пользователей
+  .get("/api/user/registry", async (req, res) => {
+    try {
+      const users = await userService.getUsers();
+      res.status(200).send(users.map((user) => ({id: user.id, fio: user.fio, createDate: user.createDate})));
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400);
+    }
+  })
+  .get("/api/user/permissions", async (req, res) => {
+    try {
+      const permissions = await userService.getPermissions();
+      res.status(200).send(permissions);
+    }
+    catch (err) {
+      console.log(err);
+      res.status(400);
+    }
+  })
   // добавление пользователя
   .post("/api/user", urlencodedParser, async (req, res) => {
     console.log(req.body);
     const userData: UserEntity = req.body;
     try {
+      const candidateUser = await userService.getUserByLogin(userData.userLogin).catch(err => console.log(err));
+      if (candidateUser) {
+        throw 'Учётная запись с таким логином уже существует';
+      }
       await userService.insertUser(userData).catch(err => console.log(err));
       res.sendStatus(201);
     }
     catch (err) {
       console.log(err);
-      res.sendStatus(400);
+      res.status(400).send({message: err});
     }
   })
   // изменение пользователя
@@ -81,11 +106,11 @@ app
         if (passwordResult) {
           const userPermissions = await userService.getUserPermissions(+candidateUser.id);
           // токен выдаётся на час, затем срок его действия истекает
-          const token = jwt.sign({userLogin: candidateUser.userLogin, uuid: candidateUser.uuid}, process.env.JWT_KEY, {expiresIn: 3600});
+          const token = jwt.sign({userLogin: candidateUser.userLogin, uuid: candidateUser.uuid}, process.env.JWT_KEY, {expiresIn: 10});
           res.status(200).send({token, fio: candidateUser.fio, permissions: userPermissions});
         }
         else {
-          res.status(401).send({message: 'Пароль не совпадает, попробуйте снова'});
+          res.status(401).send({message: 'Логин или пароль неверный, попробуйте снова'});
         }
       }
       else {
@@ -97,6 +122,16 @@ app
       res.status(400);
     }
   })
+    // выход из системы
+    .post("/api/user/logout", urlencodedParser, async (req, res) => {
+      console.log(req.body);
+      try {
+        res.sendStatus(200);
+      }
+      catch (err) {
+        res.sendStatus(400);
+      }
+    })
   // получение пользователя по id
   .get("/api/user/:id", async (req, res) => {
     const { id } = req.params;

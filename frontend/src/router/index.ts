@@ -4,8 +4,10 @@ import PersonCard from "@/modules/PersonCard/PersonCard.vue";
 import PersonCardAdditionalInfo from "@/modules/PersonCard/components/AdditionalInfo.vue";
 import CompanyCardAdditionalInfo from "@/modules/CompanyCard/components/AdditionalInfo.vue";
 import CompanyCard from "@/modules/CompanyCard/CompanyCard.vue";
+import UserCard from "@/modules/UserCard/UserCard.vue";
 import PersonRegistry from "@/modules/PersonRegistry/PersonRegistry.vue";
 import CompanyRegistry from "@/modules/CompanyRegistry/CompanyRegistry.vue";
+import UserRegistry from "@/modules/UserRegistry/UserRegistry.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 const routes: Array<RouteRecordRaw> = [
@@ -31,9 +33,22 @@ const routes: Array<RouteRecordRaw> = [
     component: PersonRegistry,
   },
   {
+    path: "/userRegistry",
+    name: "UserRegistry",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: UserRegistry,
+  },
+  {
     path: "/personRegistry/card/:mode/:id?/mainInfo",
     name: "PersonCard",
     component: PersonCard,
+  },
+  {
+    path: "/userRegistry/card/:mode/:id?/mainInfo",
+    name: "UserCard",
+    component: UserCard,
   },
   {
     path: "/personRegistry/card/:mode/:id?/additionalInfo",

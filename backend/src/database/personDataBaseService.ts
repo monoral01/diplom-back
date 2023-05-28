@@ -14,8 +14,10 @@ export const personDataBaseService = (pool: any) => ({
    },
   insertPerson: async (data: PersonCardState) => {
      const newData = formatToDB({...data, uuid: randomUUID(), personStatus: 'NEW', createDate: dayjs().format('YYYY-MM-DD')});
+     console.log(newData);
      const values = Object.values(newData);
      const fields = Object.keys(newData).join(', ');
+     console.log(fields);
      const result = await pool.query(`INSERT INTO persons (${fields}) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, values).catch((err) => console.log(err));
      return result;

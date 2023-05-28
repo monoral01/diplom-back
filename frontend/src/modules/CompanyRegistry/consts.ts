@@ -18,7 +18,7 @@ export const registryColumns = [
   },
   {
     title: "ИНН",
-    dataIndex: "companyINN",
+    dataIndex: "companyInn",
     width: 200,
   },
   {

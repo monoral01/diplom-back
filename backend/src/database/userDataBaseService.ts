@@ -5,13 +5,31 @@ import { formatFromDB, formatToDB } from '../utils/utils';
 import bcrypt from 'bcryptjs';
 
 export const userDataBaseService = (pool: any) => ({
+  getUserPermissions: async (userId: number) => {
+    const [permissions] = await pool.query(`SELECT permissions.* 
+     FROM permissions   
+      INNER JOIN permissions_users 
+         ON permissions.id = permissions_users.permission_id 
+     WHERE permissions_users.user_id = ${userId};`);
+     return permissions.map(perm => formatFromDB(perm));
+  },
+  getPermissions: async () => {
+    const [permissions] = await pool.query(`SELECT permissions.* 
+     FROM permissions`);
+     return permissions.map(perm => formatFromDB(perm));
+  },
   getUsers: async () => {
     const [data] = await pool.query('SELECT * FROM users');
     return (data as UserEntity[]).map(user => formatFromDB(user));
   },
   getUserByID: async (id: number) => {
+    const [permissions] = await pool.query(`SELECT permissions.* 
+    FROM permissions   
+     INNER JOIN permissions_users 
+        ON permissions.id = permissions_users.permission_id 
+    WHERE permissions_users.user_id = ${id};`);
      const [data] = await pool.query(`SELECT * FROM users WHERE id = ?`, [id]);
-     return formatFromDB(data[0]) as UserEntity;
+     return {...formatFromDB(data[0]), permissions: permissions.map(perm => formatFromDB(perm))} as UserEntity;
   },
   getUserByLogin: async (userLogin: string) => {
     const [data] = await pool.query(`SELECT * FROM users WHERE user_login = ?`, [userLogin]);
@@ -47,14 +65,6 @@ export const userDataBaseService = (pool: any) => ({
     const result = await pool.query(`UPDATE users (${fields}) 
       VALUES (?, ?, ?, ?, ?) WHERE id = ${data.id}`, values).catch((err) => console.log(err));
     return result;
-  },
-  getUserPermissions: async (userId: number) => {
-    const [permissions] = await pool.query(`SELECT permissions.* 
-     FROM permissions   
-      INNER JOIN permissions_users 
-         ON permissions.id = permissions_users.permission_id 
-     WHERE permissions_users.user_id = ${userId};`);
-     return permissions.map(perm => formatFromDB(perm));
   },
   deleteUser: async (id: number) => {
     const result = await pool.query(`DELETE FROM users WHERE id = ${id}`).catch((err) => console.log(err));

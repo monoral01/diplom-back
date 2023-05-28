@@ -1,8 +1,16 @@
 import { baseService } from "./baseService";
 
-export const getCompanyRegistry = async (filters: any) => {
+export const getCompanyRegistry = async ({
+  page,
+  pageSize,
+  filters,
+}: {
+  page: string | number;
+  pageSize: string | number;
+  filters: any;
+}) => {
   const res = await baseService.get("/api/company/registry", {
-    params: filters,
+    params: { ...filters, page, pageSize },
   });
   return res.data;
 };
@@ -23,6 +31,6 @@ export const postCompany = async (body: any) => {
 };
 
 export const deleteCompany = async (id: string | number) => {
-  const res = await baseService.post(`/api/company/${id}`);
+  const res = await baseService.delete(`/api/company/${id}`);
   return res.data;
 };

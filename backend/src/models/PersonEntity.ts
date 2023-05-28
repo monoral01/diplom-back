@@ -13,7 +13,7 @@ export type PersonCardState = {
   birthDate?: string;
   companyName?: string;
   companyNumber?: number;
-  companyINN?: number;
+  companyInn?: number;
   companyDirectorName?: string;
   companyCountry?: { label: string; value: string };
   postAddress?: string;

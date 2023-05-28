@@ -47,7 +47,7 @@
           <template #overlay>
             <a-menu>
               <a-menu-item key="0">
-                <div @click="logout">Выйти</div>
+                <div @click="logoutUser">Выйти</div>
               </a-menu-item>
             </a-menu>
           </template>
@@ -58,6 +58,7 @@
 </template>
 
 <script lang="ts">
+import { logout } from "@/service/authorizationService";
 import { computed, defineComponent } from "vue";
 import { useRouter } from "vue-router";
 
@@ -65,8 +66,9 @@ export default defineComponent({
   name: "PageWrapperHeader",
   setup() {
     const router = useRouter();
-    const logout = async () => {
-      console.log("logout");
+    const logoutUser = async () => {
+      console.log("logoutUser");
+      await logout();
       router.push("/");
     };
     const fio = computed(() => {
@@ -82,7 +84,7 @@ export default defineComponent({
       return { lastName: "", firstName: "", patrName: "" };
     });
     return {
-      logout,
+      logoutUser,
       fio,
     };
   },

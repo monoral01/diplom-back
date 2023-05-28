@@ -12,6 +12,9 @@
               <div @click="router.push('/companyRegistry/card/add/mainInfo')">
                 <h3>Карточка юридического лица</h3>
               </div>
+              <div @click="router.push('/userRegistry/card/add/mainInfo')">
+                <h3>Карточка юридического лица</h3>
+              </div>
             </a-row>
           </a-col>
         </a-row>

@@ -274,13 +274,14 @@ export default defineComponent({
               registrationFormState.value.firstName
             } ${registrationFormState.value.patrName ?? ""}`,
           };
-          const status = await postUser(newUserData);
-          if (status === 201) {
+          const data = await postUser(newUserData);
+          if (!data.message) {
             openSuccessModal.value = true;
           }
-        } catch (err) {
+        } catch (err: any) {
           errorNotification(
-            "При создании учётной записи произошла ошибка, обратитесь к администратору системы"
+            err.response.data.message ??
+              "При создании учётной записи произошла ошибка, обратитесь к администратору системы"
           );
         }
       });
